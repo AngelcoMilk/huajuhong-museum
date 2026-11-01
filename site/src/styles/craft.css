@@ -116,6 +116,7 @@
 .craft-machines .ex-head { margin-bottom: var(--sp-4); }
 
 .craft-tabs {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: var(--sp-2);
@@ -150,19 +151,19 @@
 .craft-tab.is-on { border-color: var(--red); color: var(--ink); }
 .craft-tab.is-on img { opacity: 1; }
 .craft-tab.is-on .craft-tab__hand { color: var(--red); }
-/* 选中项往下指向机器图 */
-.craft-tab.is-on::after {
-  content: '';
+/* 选中项往下指向机器图：五台共用一个指示三角，切换时滑动过去 */
+.craft-tabs__indicator {
   position: absolute;
-  left: 50%;
+  left: 0;
   bottom: -9px;
   width: 16px;
   height: 16px;
-  margin-left: -8px;
   border-right: 2px solid var(--red);
   border-bottom: 2px solid var(--red);
   background: var(--paper-hi);
-  transform: rotate(45deg);
+  transform: translate3d(0, 0, 0) rotate(45deg);
+  transition: transform 380ms var(--ease-out);
+  pointer-events: none;
 }
 
 .craft-viewer {
@@ -171,10 +172,13 @@
   gap: var(--sp-2);
   align-items: start;
 }
-/* 箭头对着机器图的中段，不跟随滚动 */
-.craft-arrow--prev,
-.craft-viewer__next { margin-top: 240px; }
-.craft-viewer__next { position: relative; display: grid; justify-items: center; }
+/* 箭头位置由组件按当前机器图高度算，跟着高度过渡一起走 */
+.craft-viewer__next {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  transition: margin-top 420ms var(--ease-out);
+}
 .craft-viewer__count {
   position: absolute;
   top: calc(100% + var(--sp-2));
@@ -194,7 +198,7 @@
   background: var(--paper-hi);
   color: var(--ink);
   cursor: pointer;
-  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out), border-color var(--t-1) var(--ease-out);
+  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out), border-color var(--t-1) var(--ease-out), margin-top 420ms var(--ease-out);
 }
 .craft-arrow svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; }
 .craft-arrow:hover { background: var(--ink); border-color: var(--ink); color: var(--paper-hi); }
@@ -203,7 +207,32 @@
 .craft-plate { min-width: 0; background: var(--paper-hi); border: 1px solid var(--rule-2); }
 .craft-plate__figure { position: relative; min-height: 480px; }
 .craft-plate iframe { display: block; width: 100%; min-height: 200px; border: 0; }
-.craft-plate__state { position: absolute; inset: 0; display: grid; place-items: center; }
+/* 五台机器图常驻叠放：切换只动透明度，高度跟着当前这台平滑过渡 */
+.craft-layers { position: relative; height: 480px; overflow: hidden; transition: height 420ms var(--ease-out); }
+.craft-layer {
+  position: absolute;
+  inset: 0 0 auto 0;
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 360ms var(--ease-out), visibility 0s linear 360ms;
+}
+.craft-layer.is-active {
+  z-index: 1;
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 360ms var(--ease-out), visibility 0s;
+}
+.craft-plate__state {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  background: var(--paper-hi);
+  transition: opacity 200ms var(--ease-out), visibility 0s linear 200ms;
+}
+.craft-plate__state.is-off { opacity: 0; visibility: hidden; pointer-events: none; }
 .craft-plate__state .ex-load { border: 0; }
 .craft-plate__bar {
   display: flex;
@@ -255,4 +284,10 @@
   .craft-loader__seal,
   .craft-loader__line::after,
   .craft-stage__down { animation: none; }
+  .craft-layers,
+  .craft-layer,
+  .craft-arrow,
+  .craft-viewer__next,
+  .craft-tabs__indicator,
+  .craft-plate__state { transition: none; }
 }

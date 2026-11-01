@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router'
 import { LoadState, NextHall, SectionHead, StatBar } from '../components/exhibit/Exhibit'
 import { useReveal } from '../lib/useReveal'
@@ -37,6 +37,12 @@ const MACHINES: Machine[] = [
 const PLATE_MIN_FONT = 13
 // 机器图再宽也不超过视口这个比例的高度，一屏能看全
 const PLATE_SVG_HEIGHT = 0.62
+// 机器图量出高度之前先用它撑住，免得切换时整块塌下去
+const PLATE_PLACEHOLDER = 480
+// 箭头按钮高 52，对准机器图中心要减掉一半
+const ARROW_HALF = 26
+// 窄屏两侧箭头回到顶部一行，不再跟图居中
+const NARROW_MAX = 860
 
 function hasWebGL() {
   try {
@@ -171,22 +177,16 @@ function Stage() {
   )
 }
 
-/** 机器图是自包含的本地页：去掉它的页边、页脚和操作提示，高度跟内容走，不出内层滚动条 */
-function MachineFrame({ machine, height, onHeight }: { machine: Machine; height?: number; onHeight: (value: number) => void }) {
-  const panelRef = useRef<HTMLDivElement | null>(null)
-  const [loaded, setLoaded] = useState(false)
-
-  const toggleFullscreen = useCallback(() => {
-    const panel = panelRef.current
-    if (!panel) return
-    if (document.fullscreenElement) {
-      void document.exitFullscreen()
-      return
-    }
-    void panel.requestFullscreen?.()
-  }, [])
-
+/** 一台机器图：自包含的本地页，去掉页边、页脚和操作提示，高度跟内容走，不出内层滚动条 */
+function MachineLayer({ machine, active, height, onHeight, onReady }: {
+  machine: Machine
+  active: boolean
+  height?: number
+  onHeight: (id: string, value: number) => void
+  onReady: (id: string) => void
+}) {
   const observerRef = useRef<ResizeObserver | null>(null)
+
   useEffect(() => () => observerRef.current?.disconnect(), [])
 
   const onLoad = (event: React.SyntheticEvent<HTMLIFrameElement>) => {
@@ -202,48 +202,127 @@ function MachineFrame({ machine, height, onHeight }: { machine: Machine; height?
       if (parseFloat(win.getComputedStyle(node).fontSize) < PLATE_MIN_FONT) node.style.fontSize = PLATE_MIN_FONT + 'px'
     })
     const page = doc.querySelector('.iso-page') ?? doc.body
+    const report = () => onHeight(machine.id, Math.ceil(page.getBoundingClientRect().height))
     observerRef.current?.disconnect()
-    observerRef.current = new ResizeObserver(() => onHeight(Math.ceil(page.getBoundingClientRect().height)))
+    observerRef.current = new ResizeObserver(report)
     observerRef.current.observe(page)
-    setLoaded(true)
+    report()
+    onReady(machine.id)
   }
 
   return (
-    <div className="craft-plate" id="craft-plate" role="tabpanel" ref={panelRef}>
-      <div className="craft-plate__figure">
-        <iframe src={'/machines/' + machine.id + '.html'} title={machine.name + ' · 等轴测交互图'} style={{ height }} onLoad={onLoad} />
-        {loaded ? null : (
-          <div className="craft-plate__state">
-            <LoadState state="loading" title="正在载入机器图" />
-          </div>
-        )}
-      </div>
-      <div className="craft-plate__bar">
-        <p><b>{machine.name}</b>{machine.note}</p>
-        <button type="button" className="btn" onClick={toggleFullscreen}>全屏</button>
-      </div>
+    <div
+      className={'craft-layer' + (active ? ' is-active' : '')}
+      id={'machine-' + machine.id}
+      role="tabpanel"
+      aria-labelledby={'craft-tab-' + machine.id}
+      aria-hidden={!active}
+      inert={!active}
+    >
+      <iframe src={'/machines/' + machine.id + '.html'} title={machine.name + ' · 等轴测交互图'} style={{ height }} onLoad={onLoad} />
     </div>
   )
 }
 
 function Machines() {
   const sectionRef = useRef<HTMLElement | null>(null)
-  const [active, setActive] = useState(0)
-  const [height, setHeight] = useState<number | undefined>()
-  const machine = MACHINES[active]
-  const count = MACHINES.length
-  const { hash, key } = useLocation()
+  const plateRef = useRef<HTMLDivElement | null>(null)
+  const tabsRef = useRef<HTMLDivElement | null>(null)
+  const indicatorRef = useRef<HTMLSpanElement | null>(null)
 
-  const step = useCallback((delta: number) => setActive((index) => (index + delta + count) % count), [count])
+  // 讲解员深链 /craft#machine-yaguo：首屏就落在目标台，别先亮第 1 台
+  const { hash, key } = useLocation()
+  const initialIndex = Math.max(0, MACHINES.findIndex((item) => '#machine-' + item.id === hash))
+  const firstId = MACHINES[initialIndex].id
+
+  const [active, setActive] = useState(initialIndex)
+  // shown 是「画面上正在显示哪一台」：没加载过的台先沿用旧图，载完再换，不留白
+  const [shown, setShown] = useState(initialIndex)
+  const [mounted, setMounted] = useState<string[]>([firstId])
+  const [heights, setHeights] = useState<Record<string, number>>({})
+  const [ready, setReady] = useState<Record<string, boolean>>({})
+  const [indicatorLeft, setIndicatorLeft] = useState(0)
+  const [narrow, setNarrow] = useState(() => window.matchMedia('(max-width: ' + NARROW_MAX + 'px)').matches)
+
+  const count = MACHINES.length
+  const machine = MACHINES[active]
+  const shownMachine = MACHINES[shown]
+  const shownHeight = heights[shownMachine.id]
+
+  const onHeight = useCallback((id: string, value: number) => {
+    setHeights((prev) => (prev[id] === value ? prev : { ...prev, [id]: value }))
+  }, [])
+
+  const onReady = useCallback((id: string) => {
+    setReady((prev) => (prev[id] ? prev : { ...prev, [id]: true }))
+  }, [])
+
+  const goTo = useCallback((index: number) => {
+    const target = MACHINES[index]
+    setActive(index)
+    setMounted((prev) => (prev.includes(target.id) ? prev : [...prev, target.id]))
+    // 焦点在标签栏里时，切完把焦点一起带过去，读屏和焦点环才跟得上
+    const focus = document.activeElement
+    if (focus instanceof HTMLElement && focus.closest('.craft-tabs')) {
+      document.getElementById('craft-tab-' + target.id)?.focus()
+    }
+  }, [])
+
+  const step = useCallback((delta: number) => {
+    goTo((active + delta + count) % count)
+  }, [active, count, goTo])
+
+  // 目标台载好了才换画面；已加载的台就是一步到位
+  useEffect(() => {
+    if (ready[machine.id]) setShown(active)
+  }, [active, machine.id, ready])
+
+  // 第一台先挂上，其余等机器区快进视口再逐台预加载：省流量，也别跟 3D 建场景抢主线程
+  useEffect(() => {
+    const connection = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    if (connection?.saveData) return // 省流量模式只加载当前这台
+    const rest = MACHINES.map((item) => item.id).filter((id) => id !== firstId)
+    // 窄屏只预热下一台，别一口气拉四个文档
+    const queue = window.matchMedia('(max-width: ' + NARROW_MAX + 'px)').matches ? rest.slice(0, 1) : rest
+    let index = 0
+    let timer = 0
+    let cancelled = false
+    const tick = () => {
+      if (cancelled || index >= queue.length) return
+      const id = queue[index]
+      index += 1
+      setMounted((prev) => (prev.includes(id) ? prev : [...prev, id]))
+      timer = window.setTimeout(tick, 420)
+    }
+    const start = () => { timer = window.setTimeout(tick, 200) }
+    let observer: IntersectionObserver | undefined
+    const section = sectionRef.current
+    if (section && 'IntersectionObserver' in window) {
+      observer = new IntersectionObserver((entries) => {
+        if (!entries[entries.length - 1].isIntersecting) return
+        observer?.disconnect()
+        observer = undefined
+        start()
+      }, { rootMargin: '400px 0px' })
+      observer.observe(section)
+    } else {
+      start()
+    }
+    return () => {
+      cancelled = true
+      observer?.disconnect()
+      window.clearTimeout(timer)
+    }
+  }, [firstId])
 
   // 讲解员带到某一台：/craft#machine-qizhua，选中并滚到机器区
   useEffect(() => {
     const index = MACHINES.findIndex((item) => '#machine-' + item.id === hash)
     if (index < 0) return
-    setActive(index)
+    goTo(index)
     // html 上有 scroll-behavior: smooth，3D 占着主线程时平滑滚动会停在半路，这里直接到位
     sectionRef.current?.scrollIntoView({ behavior: 'instant' })
-  }, [hash, key])
+  }, [hash, key, goTo])
 
   // 左右键：机器区在视口里、焦点不在输入框时切换。焦点在机器图里时，方向键归机器图自己
   useEffect(() => {
@@ -261,10 +340,55 @@ function Machines() {
     return () => window.removeEventListener('keydown', onKey)
   }, [step])
 
+  // 选中三角跟着标签滑动，不再瞬跳
+  const moveIndicator = useCallback(() => {
+    const host = tabsRef.current
+    const tab = host?.querySelector<HTMLButtonElement>('#craft-tab-' + MACHINES[active].id)
+    if (!host || !tab) return
+    const hostRect = host.getBoundingClientRect()
+    const tabRect = tab.getBoundingClientRect()
+    setIndicatorLeft(Math.round(tabRect.left - hostRect.left + tabRect.width / 2 - 8))
+  }, [active])
+
+  useLayoutEffect(() => {
+    moveIndicator()
+    const onResize = () => moveIndicator()
+    window.addEventListener('resize', onResize)
+    return () => window.removeEventListener('resize', onResize)
+  }, [moveIndicator])
+
+  // 窄屏两侧箭头回到顶部那一行
+  useEffect(() => {
+    const query = window.matchMedia('(max-width: ' + NARROW_MAX + 'px)')
+    const update = () => setNarrow(query.matches)
+    update()
+    query.addEventListener('change', update)
+    return () => query.removeEventListener('change', update)
+  }, [])
+
+  const toggleFullscreen = useCallback(() => {
+    const panel = plateRef.current
+    if (!panel) return
+    if (document.fullscreenElement) {
+      void document.exitFullscreen()
+      return
+    }
+    void panel.requestFullscreen?.()
+  }, [])
+
+  // 箭头对准机器图垂直中心；图高变了就跟着走，和高度过渡同一个时长
+  const arrowTop = narrow ? 0 : Math.max(0, Math.round((shownHeight ?? PLATE_PLACEHOLDER) / 2 - ARROW_HALF))
+
   return (
     <section className="craft-machines" id="machines" ref={sectionRef}>
       <SectionHead title="五台现代机器" />
-      <div className="craft-tabs" role="tablist" aria-label="五台现代机器">
+      <div className="craft-tabs" role="tablist" aria-label="五台现代机器" ref={tabsRef}>
+        <span
+          className="craft-tabs__indicator"
+          aria-hidden="true"
+          ref={indicatorRef}
+          style={{ transform: 'translate3d(' + indicatorLeft + 'px, 0, 0) rotate(45deg)' }}
+        />
         {MACHINES.map((item, index) => (
           <button
             key={item.id}
@@ -272,9 +396,9 @@ function Machines() {
             role="tab"
             id={'craft-tab-' + item.id}
             aria-selected={index === active}
-            aria-controls="craft-plate"
+            aria-controls={'machine-' + item.id}
             className={'craft-tab' + (index === active ? ' is-on' : '')}
-            onClick={() => setActive(index)}
+            onClick={() => goTo(index)}
           >
             <img src={'/img/machines/' + item.id + '.png'} alt="" width="276" height="206" />
             <span className="craft-tab__hand">{item.hand}</span>
@@ -283,15 +407,47 @@ function Machines() {
         ))}
       </div>
       <div className="craft-viewer">
-        <button type="button" className="craft-arrow craft-arrow--prev" aria-label="上一台" onClick={() => step(-1)}>
+        <button
+          type="button"
+          className="craft-arrow craft-arrow--prev"
+          aria-label="上一台"
+          style={{ marginTop: arrowTop }}
+          onClick={() => step(-1)}
+        >
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
         </button>
-        <MachineFrame machine={machine} height={height} onHeight={setHeight} key={machine.id} />
-        <div className="craft-viewer__next">
+        <div className="craft-plate" id="craft-plate" ref={plateRef}>
+          <div className="craft-plate__figure" aria-busy={!ready[machine.id]}>
+            <div className="craft-layers" style={shownHeight ? { height: shownHeight } : undefined}>
+              {mounted.map((id) => {
+                const item = MACHINES.find((entry) => entry.id === id)
+                if (!item) return null
+                return (
+                  <MachineLayer
+                    key={id}
+                    machine={item}
+                    active={item.id === shownMachine.id}
+                    height={heights[id]}
+                    onHeight={onHeight}
+                    onReady={onReady}
+                  />
+                )
+              })}
+            </div>
+            <div className={'craft-plate__state' + (ready[machine.id] ? ' is-off' : '')} aria-hidden={!!ready[machine.id]}>
+              <LoadState state="loading" title="正在载入机器图" />
+            </div>
+          </div>
+          <div className="craft-plate__bar">
+            <p><b>{shownMachine.name}</b>{shownMachine.note}</p>
+            <button type="button" className="btn" onClick={toggleFullscreen}>全屏</button>
+          </div>
+        </div>
+        <div className="craft-viewer__next" style={{ marginTop: arrowTop }}>
           <button type="button" className="craft-arrow" aria-label="下一台" onClick={() => step(1)}>
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
           </button>
-          <span className="craft-viewer__count" aria-live="polite">{active + 1} / {count}</span>
+          <span className="craft-viewer__count" aria-live="polite">{shown + 1} / {count}</span>
         </div>
       </div>
     </section>
