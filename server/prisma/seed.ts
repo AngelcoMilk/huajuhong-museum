@@ -3,7 +3,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
-import { randomBytes } from "node:crypto";
 import { hashPassword } from "../src/lib/password.ts";
 import { GUIDE_SYSTEM_PROMPT } from "../src/agent/prompts.ts";
 
@@ -71,9 +70,12 @@ async function seedConfigVersion(): Promise<string> {
   return "ConfigVersion=v1(draft)";
 }
 
+/** 后台首次登录的初始口令默认值；ADMIN_PASSWORD 仍可覆盖。 */
+const DEFAULT_ADMIN_PASSWORD = "admin123456@";
+
 async function seedAdmin() {
   const username = process.env.ADMIN_USERNAME ?? "admin";
-  // 不写死默认口令：ADMIN_PASSWORD 没设就随机生成，只在这里打印一次。
+  // 首次登录初始口令：ADMIN_PASSWORD 优先，否则用内置默认值 DEFAULT_ADMIN_PASSWORD。
   const configured = (process.env.ADMIN_PASSWORD ?? "").trim();
   const existing = await prisma.adminUser.findUnique({ where: { username } });
   if (existing) {
@@ -81,13 +83,13 @@ async function seedAdmin() {
     console.log(`[seed] 管理员 ${username} 已存在，口令与标记保持不变。`);
     return;
   }
-  const password = configured || randomBytes(12).toString("base64url");
+  const password = configured || DEFAULT_ADMIN_PASSWORD;
   await prisma.adminUser.create({
     data: { username, passwordHash: await hashPassword(password), mustChangePassword: true },
   });
   console.log(`[seed] 已创建管理员 ${username}（首次登录后必须改密）。`);
   if (configured) console.log("[seed] 初始口令取自 ADMIN_PASSWORD。");
-  else console.log(`[seed] 一次性初始口令（只显示这一次，请立刻保存）：${password}`);
+  else console.log("[seed] 初始口令为内置默认值 DEFAULT_ADMIN_PASSWORD（见本文件）。");
 }
 
 async function main() {
