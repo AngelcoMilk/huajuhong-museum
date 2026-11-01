@@ -1,0 +1,736 @@
+/* AI 讲解员浮层（独立 demo）。纸色底、墨色字、朱红点缀；细边线 + 轻圆角。
+   所有类名 hj-guide- 前缀；不 import 站内其它 css，只沿用纸墨印的色感。 */
+
+.hj-guide-dock {
+  --hj-paper: var(--paper);
+  --hj-paper-2: var(--paper-2);
+  --hj-paper-hi: var(--paper-hi);
+  --hj-ink: var(--ink);
+  --hj-ink-2: var(--ink-2);
+  --hj-ink-3: var(--ink-3);
+  --hj-red: var(--red);
+  --hj-rule: rgb(var(--ink-rgb) / 0.14);
+  --hj-rule-2: rgb(var(--ink-rgb) / 0.26);
+  --hj-shadow: 0 1px 0 rgb(var(--ink-rgb) / 0.04), 0 18px 40px -26px rgb(var(--ink-rgb) / 0.5);
+  /* 朱底圆钮的「内圈细线 + 外投影」：脉冲动画也要复用这组，否则内圈线会消失 */
+  --hj-ball-shadow: inset 0 0 0 3px var(--red), inset 0 0 0 4px rgb(var(--seal-ink-rgb) / 0.6),
+    0 6px 16px rgb(60 20 10 / 0.3);
+  --hj-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --hj-font: 'HJ Serif', 'Source Han Serif SC', 'Songti SC', 'Noto Serif SC', serif;
+  --hj-mono: ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  /* 松手后的方位切换/边界修正走过渡，拖动时关掉保持跟手 */
+  transition: left 240ms var(--hj-ease), top 240ms var(--hj-ease);
+  /* 挂在 .shell 外面（登录页也包着它），字号行高不能再靠继承 */
+  font: 400 var(--fs-body) / 1.9 var(--hj-font);
+  letter-spacing: 0.02em;
+  color: var(--hj-ink);
+}
+
+/* —— 悬浮球 —— */
+.hj-guide-ball {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--red);
+  color: var(--seal-ink);
+  cursor: pointer;
+  font-family: var(--hj-font);
+  box-shadow: var(--hj-ball-shadow);
+  transition: transform 220ms var(--hj-ease), background-color 220ms var(--hj-ease),
+    box-shadow 220ms var(--hj-ease);
+}
+/* 拖动：球要能吃掉指针事件，否则手机上会被页面滚动抢走 */
+.hj-guide-ball { touch-action: none; cursor: grab; }
+.hj-guide-dock[data-dragging='true'] .hj-guide-head { cursor: grabbing; }
+.hj-guide-dock[data-dragging='true'] { transition: none; }
+.hj-guide-dock[data-dragging='true'] .hj-guide-ball {
+  cursor: grabbing;
+  transform: none !important;
+  transition: none;
+  /* 拖动中仍是朱底，只比静止时略深 */
+  background: var(--red-2);
+}
+/* 只关过渡，不能关 animation：animation 从 none 恢复会让入场动画重播，松手就会闪 */
+.hj-guide-dock[data-dragging='true'] .hj-guide-panel { transition: none; }
+/* 朱底上的 hover 只略深，不再变回纸色 */
+.hj-guide-ball:hover { transform: translateY(-2px); background: var(--red-2); }
+.hj-guide-ball:active { transform: translateY(0); }
+/* 亮底、暗底都要看得见：内环用纸色，外侧再套一圈墨色轮廓 */
+.hj-guide-ball:focus-visible {
+  outline: 2px solid var(--hj-ink);
+  outline-offset: 3px;
+  box-shadow: var(--hj-ball-shadow), 0 0 0 3px var(--hj-paper-hi);
+}
+
+.hj-guide-ball__mark {
+  font-family: var(--font-kai);
+  font-size: 27px;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.hj-guide-ball__ring {
+  position: absolute;
+  inset: -4px;
+  border: 1px solid var(--hj-red);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hj-guide-ball__dot {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  /* 朱底上红点看不见：改纸色点 + 朱色描边 */
+  background: var(--seal-ink);
+  box-shadow: 0 0 0 2px var(--red);
+  opacity: 0;
+  transition: opacity 200ms var(--hj-ease);
+}
+
+/* 思考中：请求发出 → 首个 token，呼吸 */
+.hj-guide-ball--thinking .hj-guide-ball__ring {
+  opacity: 1;
+  animation: hj-guide-breathe 1800ms var(--hj-ease) infinite;
+}
+.hj-guide-ball--thinking .hj-guide-ball__dot { opacity: 1; animation: hj-guide-dot 1800ms var(--hj-ease) infinite; }
+
+/* 输出中：流式，轻微脉冲 */
+.hj-guide-ball--streaming .hj-guide-ball__ring { opacity: 1; }
+.hj-guide-ball--streaming .hj-guide-ball__dot { opacity: 1; animation: hj-guide-dot 900ms var(--hj-ease) infinite; }
+.hj-guide-ball--streaming { animation: hj-guide-pulse 1400ms var(--hj-ease) infinite; }
+
+@keyframes hj-guide-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.14); opacity: 1; }
+}
+@keyframes hj-guide-dot {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(0.55); opacity: 0.45; }
+}
+@keyframes hj-guide-pulse {
+  0%, 100% { box-shadow: var(--hj-ball-shadow); }
+  50% { box-shadow: var(--hj-ball-shadow), 0 0 0 6px rgb(var(--red-rgb) / 0.08); }
+}
+
+/* —— 面板 —— */
+.hj-guide-panel {
+  position: absolute;
+  right: 0;
+  bottom: calc(56px + 12px);
+  /* 下面三条由 .hj-guide-dock[data-side]/[data-vertical] 按球的方位覆盖 */
+  display: flex;
+  flex-direction: column;
+  width: 380px;
+  /* 高度按视口比例走（62vh），并封顶 560px；拖动时由 --hj-panel-max 按剩余空间收缩 */
+  height: min(var(--hj-panel-max, 62vh), 560px);
+  /* 松手后方位/高度会重算，用过渡而不是硬跳，避免"闪一下" */
+  transition: height 200ms var(--hj-ease), top 200ms var(--hj-ease), bottom 200ms var(--hj-ease);
+  overflow: hidden;
+  border: 1px solid var(--hj-rule-2);
+  border-radius: 2px;
+  background-color: var(--hj-paper);
+  background-image: var(--tex, none);
+  box-shadow: var(--hj-shadow);
+  animation: hj-guide-rise 220ms var(--hj-ease);
+}
+
+/* 球拖到左半屏：面板向右展开，避免整块跑到视口外 */
+.hj-guide-dock[data-side='left'] .hj-guide-panel { right: auto; left: 0; }
+/* 球靠近顶部：面板改到球下方，避免顶出屏幕 */
+.hj-guide-dock[data-vertical='down'] .hj-guide-panel { bottom: auto; top: calc(56px + 12px); }
+
+@keyframes hj-guide-rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hj-guide-head {
+  /* 双线压在内容之上：滚动时子母线不会被消息盖住 */
+  position: relative;
+  z-index: 1;
+  flex: none;
+  /* 整条头部是窗口拖动手柄 */
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 14px 12px;
+  border-bottom: 2px solid var(--zimu-1);
+  box-shadow: 0 2px 0 var(--hj-paper), 0 3px 0 var(--zimu-2);
+  background: transparent;
+}
+.hj-guide-head__title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.hj-guide-head__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.hj-guide-head__text strong {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--hj-ink);
+  white-space: nowrap;
+}
+
+.hj-guide-seal {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 1px;
+  background: var(--red);
+  color: var(--seal-ink);
+  font-family: var(--font-kai);
+  font-size: 19px;
+  -webkit-text-stroke: 0.022em currentColor;
+  line-height: 1;
+}
+
+.hj-guide-head__ops {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+.hj-guide-op {
+  padding: 4px 9px;
+  border: 1px solid var(--hj-rule);
+  border-radius: 0;
+  background: transparent;
+  color: var(--hj-ink-2);
+  font-family: inherit;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: color 160ms var(--hj-ease), border-color 160ms var(--hj-ease);
+}
+.hj-guide-op:hover { color: var(--hj-red); border-color: var(--hj-red); }
+.hj-guide-op:focus-visible { outline: 2px solid var(--hj-red); outline-offset: 2px; }
+.hj-guide-op--icon {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: var(--fs-body);
+  line-height: 1;
+}
+
+/* —— 消息区 —— */
+.hj-guide-scroll {
+  /* 空白处可拖窗口；保留纵向滚动，手机上不抢手势 */
+  touch-action: pan-y;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 16px 14px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--ink-rgb) / 0.22) transparent;
+}
+.hj-guide-scroll::-webkit-scrollbar { width: 6px; }
+.hj-guide-scroll::-webkit-scrollbar-thumb { background: rgb(var(--ink-rgb) / 0.2); border-radius: var(--r-2); }
+
+.hj-guide-welcome { display: flex; flex-direction: column; gap: 14px; }
+.hj-guide-welcome__lead {
+  margin: 0;
+  font-size: var(--fs-small);
+  line-height: 1.85;
+  color: var(--hj-ink-2);
+}
+.hj-guide-welcome__lead strong { color: var(--hj-ink); font-weight: 600; }
+
+.hj-guide-chips { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.hj-guide-chip {
+  max-width: 100%;
+  padding: 7px 11px;
+  border: 1px solid var(--hj-rule-2);
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-kai);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+  cursor: pointer;
+  transition: color 160ms var(--hj-ease), border-color 160ms var(--hj-ease), background-color 160ms var(--hj-ease);
+}
+.hj-guide-chip:hover:not(:disabled) { color: var(--hj-red); border-color: var(--hj-red); background: rgb(var(--red-rgb) / 0.04); }
+.hj-guide-chip:disabled { opacity: 0.5; cursor: default; }
+.hj-guide-chip:focus-visible { outline: 2px solid var(--hj-red); outline-offset: 2px; }
+
+.hj-guide-msg {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 100%;
+  /* 新消息像纸片落到桌上 */
+  animation: hj-guide-msg-in 240ms var(--hj-ease) both;
+}
+@keyframes hj-guide-msg-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.hj-guide-msg--user { align-items: flex-end; }
+.hj-guide-msg--assistant { align-items: flex-start; }
+
+.hj-guide-msg__bubble {
+  max-width: 88%;
+  padding: 9px 12px;
+  font-size: var(--fs-small);
+  line-height: 1.85;
+  letter-spacing: 0.01em;
+  /* 长链接要折行：发送气泡是纸色字，溢出到面板上就看不见了 */
+  overflow-wrap: anywhere;
+}
+.hj-guide-msg--assistant .hj-guide-msg__bubble {
+  position: relative;
+  border: 1px solid var(--hj-rule);
+  border-radius: 2px 8px 8px 8px;
+  background-color: var(--hj-paper-hi);
+  /* 右下角起势的朱红渗色：从落款印向外淡出，像印泥洇进纸里 */
+  background-image: radial-gradient(
+    132% 132% at 100% 100%,
+    rgb(var(--red-rgb) / 0.085) 0%,
+    rgb(var(--gold-rgb) / 0.055) 32%,
+    rgb(var(--gold-rgb) / 0.015) 55%,
+    transparent 72%
+  );
+  color: var(--hj-ink);
+  box-shadow: 0 1px 2px rgb(var(--ink-rgb) / 0.035);
+  padding: 10px 13px 11px;
+  transition: padding-bottom 240ms var(--hj-ease);
+}
+
+/* 落款位只在「已完成」时撑开：生成过程中保持紧凑，不空着一块底。
+   用 padding 过渡补上这 21px，避免盖印瞬间把气泡扽高。 */
+.hj-guide-msg--assistant[data-seal='true'][data-state='done'] .hj-guide-msg__bubble {
+  padding-bottom: 32px;
+  background-image: radial-gradient(
+    128% 128% at 100% 100%,
+    rgb(var(--red-rgb) / 0.13) 0%,
+    rgb(var(--gold-rgb) / 0.075) 28%,
+    rgb(var(--gold-rgb) / 0.02) 52%,
+    transparent 70%
+  );
+}
+
+/* 落款印：只盖在最新一条「已完成」的回答上，像尺牍末尾的朱印。
+   流式中、被中断、出错都不盖章——没写完就不落款。 */
+.hj-guide-msg--assistant[data-seal='true'][data-state='done'] .hj-guide-msg__bubble::after {
+  content: '橘';
+  position: absolute;
+  right: 9px;
+  bottom: 7px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1.5px solid rgb(var(--red-rgb) / 0.85);
+  border-radius: 1px;
+  background: rgb(var(--red-rgb) / 0.08);
+  color: var(--red);
+  font-family: var(--font-kai);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  transform: rotate(-5deg);
+  pointer-events: none;
+  user-select: none;
+  /* 从上方按下、略过冲再回正，像真的落印 */
+  animation: hj-guide-seal-press 280ms cubic-bezier(0.22, 0.9, 0.28, 1) both;
+}
+
+@keyframes hj-guide-seal-press {
+  0% {
+    opacity: 0;
+    transform: scale(1.8) rotate(-16deg);
+  }
+  58% {
+    opacity: 1;
+    transform: scale(0.92) rotate(-3.2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(-5deg);
+  }
+}
+/* 发送气泡：墨底纸字。右上角一点朱色洇染，和回复右下角的渐变呼应 */
+.hj-guide-msg--user .hj-guide-msg__bubble {
+  border: 1px solid var(--ink);
+  border-radius: 8px 2px 8px 8px;
+  background-color: var(--ink);
+  background-image: radial-gradient(
+    130% 130% at 100% 0%,
+    rgb(var(--red-rgb) / 0.22) 0%,
+    rgb(var(--gold-rgb) / 0.08) 38%,
+    transparent 70%
+  );
+  color: var(--seal-ink);
+}
+.hj-guide-msg--user .hj-guide-msg__bubble ::selection {
+  background: var(--seal-ink);
+  color: var(--ink);
+}
+
+.hj-guide-p { margin: 0 0 10px; }
+.hj-guide-p:last-child { margin-bottom: 0; }
+.hj-guide-p--plain { white-space: pre-wrap; }
+.hj-guide-p--muted { color: var(--hj-ink-3); font-size: var(--fs-note); }
+
+/* —— 富文本：强调、荧光高亮、标题、引用、分割线 —— */
+.hj-guide-msg__bubble strong {
+  font-weight: 600;
+  color: var(--hj-red);
+}
+/* 荧光笔式高亮：淡金底 + 略微加粗，比整片色块更贴纸感 */
+.hj-guide-msg__bubble mark {
+  padding: 0 2px;
+  border-radius: var(--r-1);
+  background: linear-gradient(180deg, transparent 52%, rgb(var(--gold-rgb) / 0.42) 52%);
+  color: var(--hj-ink);
+  font-weight: 600;
+}
+.hj-guide-msg__bubble em { font-style: italic; color: var(--hj-ink-2); }
+.hj-guide-msg__bubble a {
+  color: var(--hj-red);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.hj-guide-h {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 12px 0 6px;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--hj-ink);
+}
+.hj-guide-h::before {
+  content: '';
+  flex: none;
+  width: 3px;
+  height: 13px;
+  border-radius: var(--r-1);
+  background: var(--hj-red);
+}
+.hj-guide-h:first-child { margin-top: 0; }
+.hj-guide-h[data-level='3'],
+.hj-guide-h[data-level='4'] {
+  margin-top: 10px;
+  font-size: var(--fs-note);
+  color: var(--hj-ink-2);
+}
+.hj-guide-quote {
+  margin: 8px 0;
+  padding: 1px 0 1px 10px;
+  border-left: 2px solid rgb(var(--red-rgb) / 0.42);
+  color: var(--hj-ink-2);
+  font-size: var(--fs-note);
+  line-height: 1.8;
+}
+.hj-guide-hr {
+  margin: 12px 0;
+  border: 0;
+  border-top: 1px dashed var(--hj-rule-2);
+}
+.hj-guide-msg__bubble code {
+  padding: 1px 4px;
+  border-radius: var(--r-2);
+  background: rgb(var(--ink-rgb) / 0.07);
+  font-family: var(--hj-mono);
+  font-size: var(--fs-micro);
+}
+.hj-guide-pre {
+  margin: 8px 0;
+  padding: 9px 11px;
+  border: 1px solid var(--hj-rule);
+  border-radius: var(--r-2);
+  background: var(--hj-paper-2);
+  overflow-x: auto;
+  font-size: var(--fs-micro);
+  line-height: 1.7;
+}
+.hj-guide-pre code { padding: 0; background: none; font-size: inherit; }
+.hj-guide-list { margin: 6px 0; padding-left: 18px; }
+.hj-guide-list li { margin: 2px 0; }
+.hj-guide-list li::marker { color: var(--hj-red); }
+
+/* 思考中的三点 */
+.hj-guide-typing { display: inline-flex; align-items: center; gap: 4px; padding: 3px 0; min-height: 18px; }
+.hj-guide-typing i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--hj-red);
+  opacity: 0.35;
+  animation: hj-guide-typing 1200ms var(--hj-ease) infinite;
+}
+.hj-guide-typing i:nth-child(2) { animation-delay: 160ms; }
+.hj-guide-typing i:nth-child(3) { animation-delay: 320ms; }
+@keyframes hj-guide-typing {
+  0%, 100% { opacity: 0.2; transform: translateY(0) scale(0.78); }
+  45% { opacity: 1; transform: translateY(-3px) scale(1); }
+}
+
+/* 书写中的笔尖：不硬闪，明暗与长度一起呼吸 */
+.hj-guide-caret {
+  display: inline-block;
+  width: 2px;
+  height: 13px;
+  margin-left: 2px;
+  vertical-align: -2px;
+  border-radius: var(--r-1);
+  background: var(--hj-red);
+  animation: hj-guide-caret 1100ms ease-in-out infinite;
+}
+@keyframes hj-guide-caret {
+  0%, 100% { opacity: 0.12; transform: scaleY(0.78); }
+  50% { opacity: 0.85; transform: scaleY(1); }
+}
+
+/* —— 引用与动作 —— */
+/* 引用是脚注性质的小字：不抢正文，弱化到纸张纹理的程度 */
+.hj-guide-citations {
+  display: flex;
+  /* 不同出处各占一行，不再并排 */
+  flex-direction: column;
+  gap: 1px;
+  max-width: 100%;
+  margin-top: 2px;
+  padding-left: 1px;
+}
+.hj-guide-citation {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: var(--fs-tiny);
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  color: var(--hj-ink-3);
+  opacity: 0.9;
+  user-select: text;
+}
+.hj-guide-citation__lead {
+  /* "引用自"三个字必须整体在一行，不能被挤到拆开 */
+  flex: none;
+  white-space: nowrap;
+  color: var(--hj-ink-3);
+  letter-spacing: 0.1em;
+  opacity: 0.75;
+}
+.hj-guide-citation__origin {
+  min-width: 0;
+  color: var(--hj-ink-2);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  /* 只有出处本身过长时才折行，"引用自"始终留在同一行开头 */
+  overflow-wrap: anywhere;
+}
+a.hj-guide-citation__origin:hover {
+  border-bottom-color: rgb(var(--red-rgb) / 0.4);
+  color: var(--hj-red);
+}
+
+/* —— 操作卡片：讲解员替访客做了什么 —— */
+.hj-guide-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.hj-guide-card {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--hj-rule-2);
+  border-left: 2px solid var(--hj-red);
+  border-radius: 2px;
+  background: var(--hj-paper-hi);
+  color: var(--hj-ink);
+  font-size: var(--fs-micro);
+  line-height: 1.7;
+  user-select: text;
+}
+.hj-guide-card[data-state='running'],
+.hj-guide-card[data-state='undone'] {
+  border-left-color: var(--hj-rule-2);
+  color: var(--hj-ink-3);
+}
+.hj-guide-card[data-state='failed'] {
+  border: 1px dashed rgb(var(--red-rgb) / 0.5);
+  background: rgb(var(--red-rgb) / 0.05);
+  color: var(--hj-ink-2);
+}
+.hj-guide-card__text { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.hj-guide-card__undo {
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid currentColor;
+  background: transparent;
+  color: var(--hj-ink-2);
+  font: inherit;
+  font-family: var(--font-kai);
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+.hj-guide-card__undo:hover:not(:disabled) { color: var(--hj-red); }
+.hj-guide-card__undo:focus-visible { outline: 2px solid var(--hj-ink); outline-offset: 2px; }
+.hj-guide-card__undo:disabled { color: var(--hj-ink-3); border-bottom-color: transparent; cursor: default; }
+.hj-guide-card__err { flex: 1 0 100%; color: var(--hj-red); }
+
+/* —— 错误条 —— */
+.hj-guide-error {
+  flex: none;
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+  margin: 0 14px 6px;
+  padding: 7px 10px;
+  border: 1px solid rgb(var(--red-rgb) / 0.35);
+  border-left: 3px solid var(--hj-red);
+  border-radius: var(--r-2);
+  background: rgb(var(--red-rgb) / 0.05);
+  font-size: var(--fs-micro);
+  line-height: 1.6;
+  color: var(--hj-ink-2);
+}
+/* —— 输入区 —— */
+.hj-guide-composer {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 12px 10px;
+  border-top: 1px solid var(--hj-rule);
+  background: rgb(var(--paper-hi-rgb) / 0.72);
+}
+.hj-guide-composer__row {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+.hj-guide-input {
+  flex: 1 1 auto;
+  min-height: 40px;
+  max-height: 132px;
+  padding: 8px 10px;
+  border: 1px solid var(--hj-rule-2);
+  border-radius: 0;
+  background: var(--hj-paper-hi);
+  color: var(--hj-ink);
+  font-family: inherit;
+  font-size: var(--fs-note);
+  line-height: 1.5;
+  resize: none;
+  overflow-y: auto;
+  transition: border-color 160ms var(--hj-ease);
+}
+.hj-guide-input::placeholder { color: var(--hj-ink-3); }
+.hj-guide-input:focus {
+  outline: none;
+  border-color: var(--hj-red);
+}
+
+.hj-guide-send {
+  flex: none;
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid var(--hj-ink);
+  border-radius: 0;
+  background: var(--hj-ink);
+  color: var(--hj-paper-hi);
+  font-family: inherit;
+  font-size: var(--fs-note);
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  transition: background-color 160ms var(--hj-ease), border-color 160ms var(--hj-ease), color 160ms var(--hj-ease);
+}
+.hj-guide-send:hover:not(:disabled) { background: var(--ink-2); border-color: var(--ink-2); }
+.hj-guide-send:disabled { opacity: 0.4; cursor: default; }
+.hj-guide-send:focus-visible { outline: 2px solid var(--hj-red); outline-offset: 2px; }
+.hj-guide-send--stop {
+  border-color: var(--hj-red);
+  background: transparent;
+  color: var(--hj-red);
+}
+.hj-guide-send--stop:hover:not(:disabled) { background: rgb(var(--red-rgb) / 0.07); border-color: var(--hj-red); }
+
+/* —— 手机 —— */
+@media (max-width: 640px) {
+  .hj-guide-dock {
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    padding: 0;
+  }
+  .hj-guide-panel {
+    width: min(380px, calc(100vw - 32px));
+    max-width: calc(100vw - 32px);
+    /* 手机上再低一点，避免键盘弹起时把输入区顶出屏幕 */
+    height: min(var(--hj-panel-max, 58vh), 520px);
+  }
+  .hj-guide-op { min-width: 44px; min-height: 44px; }
+  .hj-guide-op--icon { width: 44px; height: 44px; }
+  .hj-guide-chip { min-height: 44px; }
+  .hj-guide-input { min-height: 44px; font-size: 16px; }
+  .hj-guide-send { height: 44px; }
+  .hj-guide-citation { align-items: center; }
+  a.hj-guide-citation__origin { display: flex; align-items: center; min-height: 44px; }
+  .hj-guide-card { align-items: center; }
+  .hj-guide-card__undo { min-width: 44px; min-height: 44px; border-bottom: 0; text-decoration: underline; text-underline-offset: 3px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hj-guide-ball,
+  .hj-guide-ball--streaming,
+  .hj-guide-ball__ring,
+  .hj-guide-ball__dot,
+  .hj-guide-typing i,
+  .hj-guide-caret,
+  .hj-guide-msg,
+  .hj-guide-msg--assistant[data-seal='true'][data-state='done'] .hj-guide-msg__bubble::after,
+  .hj-guide-panel {
+    animation: none !important;
+    transition-duration: 1ms !important;
+  }
+}

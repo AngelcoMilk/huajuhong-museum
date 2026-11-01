@@ -1,0 +1,393 @@
+/* 园区厅与博物馆厅共用的两件东西：全景场景卡、全景 / 文章弹层。
+   颜色取 tokens.css 的令牌；暗厅那个厅自己覆盖 tone。
+   少数地方直接写 rgb(... / a)——都是压在图上的半透明墨、纸白描边这类遮挡色，
+   tokens 里没有对应项，写法与 home.css、enterprises.css 一致。 */
+
+/* —— 场景卡 —— */
+.hall-vr {
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 1px solid var(--rule);
+  background: var(--paper-2);
+  color: inherit;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--t-1) var(--ease-out), box-shadow var(--t-2) var(--ease-out);
+}
+.hall-vr:hover,
+.hall-vr:focus-visible {
+  border-color: var(--rule-2);
+  box-shadow: var(--shadow);
+  outline: none;
+}
+.hall-vr:focus-visible { border-color: var(--red); }
+
+.hall-vr__frame {
+  position: relative;
+  display: block;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  background: var(--olive);
+}
+.hall-vr--sm .hall-vr__frame { aspect-ratio: 16 / 9; }
+.hall-vr__frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.86) contrast(1.03);
+  transition: transform var(--t-3) var(--ease-out);
+}
+.hall-vr:hover .hall-vr__frame img { transform: scale(1.045); }
+
+.hall-vr__blank {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-kai);
+  font-size: clamp(34px, 4.4vw, 58px);
+  letter-spacing: 0.08em;
+  color: rgb(var(--on-dark-rgb) / 0.34);
+}
+
+.hall-vr__cue {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 4px 9px 5px;
+  font-family: var(--font-kai);
+  font-size: var(--fs-note);
+  line-height: calc(var(--fs-tiny) * 1.9);
+  letter-spacing: 0.12em;
+  color: var(--paper-hi);
+  background: rgb(var(--night-rgb) / 0.62);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--t-1) var(--ease-out), transform var(--t-1) var(--ease-out);
+}
+/* 亮底卡片有绫边：角标收进边里 */
+.hall-vr[data-tone='paper'] .hall-vr__cue { right: 6px; bottom: 6px; }
+.hall-vr:hover .hall-vr__cue,
+.hall-vr:focus-visible .hall-vr__cue { opacity: 1; transform: none; }
+
+.hall-vr__body { display: block; padding: 12px 14px 14px; }
+.hall-vr__body b {
+  display: block;
+  font-size: var(--fs-h3);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.4;
+}
+
+/* 暗厅里的场景卡：底与字都翻过来，边框退到很淡 */
+.hall-vr[data-tone='dark'] {
+  border-color: rgb(var(--on-dark-rgb) / 0.16);
+  background: rgb(var(--on-dark-rgb) / 0.045);
+}
+.hall-vr[data-tone='dark']:hover {
+  border-color: rgb(var(--red-rgb) / 0.75);
+  box-shadow: none;
+}
+.hall-vr[data-tone='dark'] .hall-vr__body b { color: var(--olive-ink); }
+.hall-vr[data-tone='dark'] .hall-vr__frame { background: rgb(var(--night-rgb) / 0.3); }
+
+/* —— 全景弹层 —— */
+.hall-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  background: var(--olive);
+  animation: hall-fade var(--t-2) var(--ease-out);
+}
+.hall-stage__box {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--olive);
+}
+.hall-stage__box:focus { outline: none; }
+.hall-stage__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: var(--sp-2) var(--gutter);
+  border-bottom: 1px solid rgb(var(--on-dark-rgb) / 0.14);
+}
+.hall-stage__title {
+  margin: 0;
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--olive-ink);
+}
+.hall-stage__acts { display: flex; align-items: center; gap: 10px; flex: none; }
+.hall-stage__close {
+  min-height: 44px;
+  padding: 6px 16px;
+  border: 1px solid rgb(var(--on-dark-rgb) / 0.4);
+  background: transparent;
+  color: var(--olive-ink);
+  font-family: inherit;
+  font-size: var(--fs-micro);
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out);
+}
+.hall-stage__close:hover { background: var(--olive-ink); color: var(--olive); }
+.hall-stage__frame {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  background: var(--night);
+}
+.hall-stage__frame iframe { display: block; width: 100%; height: 100%; border: 0; }
+
+/* —— 文章阅读层 —— */
+.hall-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 88;
+  display: grid;
+  place-items: center;
+  padding: clamp(10px, 3vw, 36px);
+  background: rgb(var(--ink-rgb) / 0.42);
+  animation: hall-fade var(--t-2) var(--ease-out);
+}
+.hall-sheet__box {
+  --sheet-gutter: clamp(20px, 4vw, 56px);
+  --sheet-bar: 56px;
+  position: relative;
+  width: min(760px, 100%);
+  max-height: min(88vh, 100%);
+  overflow-y: auto;
+  /* Tab 到正文里的链接时别停在顶栏背后 */
+  scroll-padding-top: calc(var(--sheet-bar) + 8px);
+  padding: 0 var(--sheet-gutter) clamp(28px, 4vw, 44px);
+  background: var(--paper-hi);
+  border: 1px solid var(--rule);
+  /* 绫边：画在盒子外面，不占位 */
+  box-shadow: 0 0 0 6px var(--ling), 0 0 0 7px rgb(var(--ink-rgb) / 0.3), 0 30px 70px -30px rgb(var(--night-rgb) / 0.6);
+  animation: hall-rise var(--t-2) var(--ease-out);
+}
+/* 文末的子母线：落在底部留白里，正负边距相抵，不增高 */
+.hall-sheet__box::after {
+  content: '';
+  display: block;
+  height: 5px;
+  margin: 20px 0 -25px;
+  border-top: 1px solid var(--zimu-2);
+  border-bottom: 2px solid var(--zimu-1);
+}
+/* 顶栏只放「合上」，标题随正文滚走：面板是滚动容器，长文滚下去以后还得够得着 */
+.hall-sheet__bar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: var(--sheet-bar);
+  margin-inline: calc(var(--sheet-gutter) * -1);
+  padding-inline: clamp(16px, 3vw, 26px);
+  background: var(--paper-hi);
+  border-bottom: 1px solid transparent;
+}
+/* 滚起来才出现分隔线，打开时顶栏和标题是一张纸 */
+@supports (animation-timeline: scroll()) {
+  .hall-sheet__bar {
+    animation: hall-bar-rule linear both;
+    animation-timeline: scroll(nearest block);
+    animation-range: 0 24px;
+  }
+}
+.hall-sheet__head {
+  position: relative;
+  margin-bottom: 1.6em;
+  padding: clamp(0px, 1.5vw, 20px) 0 1.2em;
+  border-bottom: 1px solid transparent;
+}
+.hall-sheet__head::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -1px;
+  height: 5px;
+  border-top: 2px solid var(--zimu-1);
+  border-bottom: 1px solid var(--zimu-2);
+}
+.hall-sheet__cut {
+  margin: 1.4em 0 0;
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+.hall-sheet__kicker {
+  margin: 0 0 8px;
+  font-family: var(--font-kai);
+  font-size: var(--fs-label);
+  line-height: var(--lh-micro);
+  letter-spacing: 0.12em;
+  color: var(--ink-2);
+}
+.hall-sheet__title {
+  margin: 0 0 12px;
+  font-size: var(--fs-h2);
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0.03em;
+}
+.hall-sheet__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  font-family: var(--font-kai);
+  font-size: var(--fs-label);
+  line-height: var(--lh-micro);
+  color: var(--ink-2);
+  letter-spacing: 0.06em;
+}
+.hall-sheet__meta a { color: var(--red-2); text-decoration: none; border-bottom: 1px solid rgb(var(--red-rgb) / 0.4); }
+.hall-sheet__meta a:hover { color: var(--red); }
+.hall-sheet__close {
+  flex: none;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 6px 14px;
+  border: 1px solid var(--rule-2);
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--font-kai);
+  font-size: var(--fs-label);
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out);
+}
+.hall-sheet__close:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.hall-sheet__close:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.hall-sheet__foot {
+  margin-top: 1.8em;
+  padding-top: 1em;
+  border-top: 1px solid var(--rule);
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+  line-height: 1.9;
+}
+.hall-sheet__foot p { margin: 0; }
+
+@keyframes hall-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes hall-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes hall-bar-rule {
+  from { border-bottom-color: transparent; }
+  to { border-bottom-color: var(--rule); }
+}
+
+@media (max-width: 640px) {
+  .hall-vr__body { padding: var(--sp-2) 10px 10px; }
+  .hall-vr__body b { font-size: var(--fs-small); }
+}
+
+@media (max-width: 860px) {
+  .hall-sheet { padding: 0; }
+  .hall-sheet__box { width: 100%; max-height: 100%; height: 100%; border: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hall-stage,
+  .hall-sheet,
+  .hall-sheet__box { animation: none; }
+  .hall-vr__frame img { transition: none; }
+}
+/* —— 场景墙的版式：feature 一张占满一行，grid 里 featured 占两列两行 —— */
+.vr-wall { grid-auto-flow: dense; }
+.vr-wall__lead { grid-column: 1 / -1; }
+.vr-wall__lead .hall-vr {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: center;
+}
+.vr-wall__lead .hall-vr__frame { aspect-ratio: 2 / 1; }
+.vr-wall__lead .hall-vr__body { padding: var(--sp-3) var(--sp-5); }
+.vr-wall__lead .hall-vr__body b { font-size: var(--fs-h3); }
+.vr-wall__big { grid-column: span 2; grid-row: span 2; }
+.hall-vr__desc {
+  display: block;
+  margin-top: 4px;
+  font-size: var(--fs-note);
+  line-height: 1.6;
+  color: var(--ink-3);
+}
+.hall-vr[data-tone='dark'] .hall-vr__desc { color: rgb(var(--on-dark-rgb) / 0.72); }
+
+/* —— 全景弹层的载入态 —— */
+.hall-stage__veil {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  overflow: hidden;
+  background: var(--night);
+  color: var(--olive-ink);
+  transition: opacity var(--t-3) var(--ease-out);
+}
+.hall-stage__veil.is-through { opacity: 0; pointer-events: none; }
+.hall-stage__veil img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.35;
+  filter: blur(6px);
+}
+.hall-stage__veil b,
+.hall-stage__veil button,
+.hall-stage__veil span { position: relative; }
+.hall-stage__veil b { font-size: var(--fs-body); font-weight: 400; letter-spacing: 0.12em; }
+.hall-stage__spin {
+  width: 28px;
+  height: 28px;
+  border: 2px solid rgb(var(--on-dark-rgb) / 0.25);
+  border-top-color: var(--olive-ink);
+  border-radius: 50%;
+  animation: hall-spin 1s linear infinite;
+}
+.hall-stage__retry {
+  min-height: 44px;
+  padding: 6px 20px;
+  border: 1px solid rgb(var(--on-dark-rgb) / 0.5);
+  background: transparent;
+  color: var(--olive-ink);
+  font: inherit;
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.hall-stage__retry:hover { background: var(--olive-ink); color: var(--olive); }
+@keyframes hall-spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 640px) {
+  .vr-wall__lead .hall-vr { display: block; }
+  .vr-wall__lead .hall-vr__frame { aspect-ratio: 16 / 9; }
+  .vr-wall__lead .hall-vr__body { padding: var(--sp-2) 10px 10px; }
+  .vr-wall__big { grid-row: auto; }
+  .hall-stage__title { font-size: var(--fs-h3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hall-stage__spin { animation: none; }
+}

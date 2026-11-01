@@ -1,0 +1,47 @@
+/* 字体：思源宋体 / 霞鹜文楷的站内子集，放在 site/public/fonts/。 */
+@font-face {
+  font-family: "HJ Serif";
+  src: url("/fonts/hj-serif-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "HJ Serif";
+  src: url("/fonts/hj-serif-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "LXGW WenKai";
+  src: url("/fonts/hj-hand-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+/* 楷体小字里的数字和 . % - 用宋体：楷体的 9 像 q。排在 --font-kai 最前面，汉字不受影响 */
+@font-face {
+  font-family: "HJ Kai Digits";
+  src: url("/fonts/hj-serif-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0030-0039, U+0025, U+002D, U+002E;
+}
+
+/* 网站的基础样式，颜色取自 styles/tokens.css */
+:root {
+  font: 18px/1.6 "HJ Serif", "Songti SC", "Noto Serif SC", serif;
+  color: var(--ink);
+  background: var(--paper);
+}
+
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; height: 100%; }
+a { color: inherit; }
+/* 路由懒加载时的空白垫片：别闪白、别跳动 */
+.boot-fallback {
+  min-height: 100vh;
+  background: var(--paper);
+}

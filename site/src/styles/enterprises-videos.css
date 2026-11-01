@@ -1,0 +1,165 @@
+/* 企业档案 · 官网视频（页内播放）
+   纸色底 / 墨色字 / 细描边 / 零圆角 / 无渐变 / 无阴影。
+   类名全部以 .ent-videos 前缀，独立于 enterprises.css，避免与既有样式互相污染。 */
+
+.ent-videos {
+  margin-top: clamp(24px, 3vw, 34px);
+  padding-top: 16px;
+  border-top: 1px solid var(--rule);
+  color: var(--ink);
+  font-family: var(--font-song);
+}
+
+.ent-videos__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+  margin: 0 0 14px;
+  font: 600 15px/1.4 var(--font-kai);
+  letter-spacing: 0.08em;
+  color: var(--ink);
+}
+
+.ent-videos__count {
+  font: 400 12px/1.4 var(--font-kai);
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+}
+
+.ent-videos__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  align-items: start;
+  gap: clamp(14px, 2vw, 20px);
+}
+
+.ent-videos__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--paper-hi);
+}
+
+.ent-videos__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font: 600 13.5px/1.5 var(--font-kai);
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+
+.ent-videos__no {
+  flex: none;
+  font: 400 var(--fs-note)/16.5px var(--font-kai);
+  letter-spacing: 0.1em;
+  color: var(--ink-2);
+}
+
+.ent-videos__titletext {
+  min-width: 0;
+}
+
+/* 16:9 自适应：窄屏单列、宽屏并排，比例不变 */
+.ent-videos__frame {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border: 1px solid var(--rule-2);
+  border-radius: 0;
+  background: var(--paper-3);
+}
+
+.ent-videos__player {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: 100%;
+  object-fit: contain;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper-3);
+}
+
+.ent-videos__fallback {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  background: var(--paper-hi);
+}
+
+.ent-videos__note {
+  margin: 0;
+  font: 400 12.5px/1.75 var(--font-song);
+  letter-spacing: 0.02em;
+  color: var(--ink-2);
+}
+
+.ent-videos__link {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px;
+  align-self: flex-start;
+  font: 400 12.5px/1.6 var(--font-song);
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-decoration-color: var(--rule);
+  text-underline-offset: 4px;
+}
+
+.ent-videos__link:hover {
+  color: var(--ink);
+  text-decoration-color: var(--ink);
+}
+
+.ent-videos__link:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.ent-videos__host {
+  font: 400 11.5px/1.6 var(--font-kai);
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+}
+
+@media (max-width: 640px) {
+  .ent-videos__list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .ent-videos__card {
+    padding: 10px;
+  }
+
+  .ent-videos__fallback {
+    padding: 10px;
+  }
+}
+
+/* 原生全屏：显式撑满视口，避免某些浏览器里进全屏后画面仍是小尺寸 */
+.ent-videos__player:fullscreen {
+  inline-size: 100vw;
+  block-size: 100vh;
+  max-inline-size: 100vw;
+  max-block-size: 100vh;
+  object-fit: contain;
+  background: var(--night);
+}
+
+.ent-videos__player::-webkit-media-controls-fullscreen-button {
+  display: inline-block;
+}

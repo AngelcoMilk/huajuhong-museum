@@ -1,0 +1,26 @@
+# 依赖与构建产物
+node_modules/
+dist/
+
+# 环境变量：只提交样例
+.env
+*.env
+!.env.example
+
+# 本地数据库文件
+server/prisma/*.db
+server/prisma/*.db-journal
+server/prisma/*.db-wal
+server/prisma/*.db-shm
+
+# 后台上传的文件与运行日志
+server/uploads/*
+!server/uploads/.gitkeep
+server/logs/*
+!server/logs/.gitkeep
+
+# 备份快照
+backups/
+
+# 系统文件
+.DS_Store

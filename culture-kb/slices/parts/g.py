@@ -1,0 +1,22 @@
+# -*- coding: utf-8 -*-
+CONFIGS = [
+    dict(id='g-liulei-01', title='官网产品六大类', file='产品-分类与形态谱系.md', tag='知识库',
+         origin='empty', paras=[0, 1], regex=[(r'；h-col-\d+', ''), (r'栏目页；', '')]),
+    dict(id='g-xingtai-01', title='产品形态谱系', file='产品-分类与形态谱系.md', tag='§6.5', origin='empty'),
+    dict(id='g-pi-01', title='化橘红皮是什么', file='产品-代表条目.md', tag='《化橘红皮》', origin='tag'),
+    dict(id='g-guo-01', title='化橘红果怎么泡', file='产品-代表条目.md', tag='《化橘红果》', origin='tag'),
+    dict(id='g-hua-01', title='化橘红花怎么喝', file='产品-代表条目.md', tag='《化橘红花》', origin='tag'),
+    dict(id='g-qiepian-01', title='化橘红切片怎么泡', file='产品-代表条目.md', tag='《化橘红切片》', origin='tag'),
+    dict(id='g-chennian-01', title='陈年化橘红怎么算', file='产品-代表条目.md', tag='《陈年化橘红》', origin='tag'),
+    dict(id='g-qizhua-01', title='七爪化橘红是什么', file='产品-代表条目.md', tag='《七爪化橘红》', origin='tag'),
+    dict(id='g-keli-01', title='橘红颗粒治什么', file='产品-代表条目.md', tag='《橘红颗粒》', origin='tag'),
+    dict(id='g-koufuye-01', title='止咳橘红口服液', file='产品-代表条目.md', tag='《化橘红口服液》', origin='tag'),
+    dict(id='g-cha-01', title='化橘红茶是什么', file='产品-代表条目.md', tag='《化橘红茶》', origin='tag'),
+    dict(id='g-meicha-01', title='橘红莓茶六味配方', file='产品-代表条目.md', tag='《橘红霉茶》', origin='tag'),
+    dict(id='g-puer-01', title='橘红普洱茶怎么做', file='产品-代表条目.md', tag='《橘红普洱茶》', origin='tag'),
+    dict(id='g-zhizi-01', title='橘红栀子茶配什么', file='产品-代表条目.md', tag='《橘红栀子茶》', origin='tag'),
+    dict(id='g-qingguo-01', title='橘红青果茶怎么喝', file='产品-代表条目.md', tag='《橘红青果茶》', origin='tag'),
+    dict(id='g-tang-01', title='化橘红糖怎么吃', file='产品-代表条目.md', tag='《化橘红糖》', origin='tag'),
+    dict(id='g-chayeguan-01', title='化橘红茶叶罐', file='产品-代表条目.md', tag='《化橘红茶叶罐》', origin='tag'),
+    dict(id='g-yanzhong-01', title='橘红烟盅有什么用', file='产品-代表条目.md', tag='《化橘红烟盅》', origin='tag'),
+]

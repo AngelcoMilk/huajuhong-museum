@@ -1,0 +1,15 @@
+{
+ "changed_files": 15,
+ "by_rule": {
+  "I_CDN资源绝对化": 1145
+ },
+ "unresolved": {
+  "https://www.hzhjh.com.cn/jzcusstyle.jsp?id=168&colId=168&extId=0&_csw=0&clientSupportWebp=false": 1,
+  "aweme://goods/store?sec_shop_id=QeFHuGed": 1,
+  "https://www.hzhjh.com.cn/sys-nd/%22https%3A%2F%2Fimg2-cloud.itouchtv.cn%2Fpriv%2Ftvtouchtv%2Fimage%2F20250309%2F1741510142778566-1354.png%3FOSSAccessKeyId%3DLTAI5tM3ViymJKLSyS6D5mME%26Expires%3D1741517343%26Signature%3DqwRugLbwZPvrW7IfWFsKVLotNXg%253D%22": 1,
+  "https://www.hzhjh.com.cn/sys-nd/%22https%3A%2F%2Fimg2-cloud.itouchtv.cn%2Fpriv%2Ftvtouchtv%2Fimage%2F20250309%2F1741510177232600-1354.png%3FOSSAccessKeyId%3DLTAI5tM3ViymJKLSyS6D5mME%26Expires%3D1741517377%26Signature%3DBv2HIh7yjchDNmpHgIpoXfvqY8o%253D%22": 1,
+  "https://www.hzhjh.com.cn/sys-nd/%22https%3A%2F%2Fimg2-cloud.itouchtv.cn%2Fpriv%2Ftvtouchtv%2Fimage%2F20250309%2F1741510194566162-1354.png%3FOSSAccessKeyId%3DLTAI5tM3ViymJKLSyS6D5mME%26Expires%3D1741517394%26Signature%3DnJx48z3hgkhYp1Gx%252FUFnAIfQRHc%253D%22": 1,
+  "https://www.hzhjh.com.cn/sys-nd/%22https%3A%2F%2Fimg2-cloud.itouchtv.cn%2Fpriv%2Ftvtouchtv%2Fimage%2F20250309%2F1741510234523172-1354.png%3FOSSAccessKeyId%3DLTAI5tM3ViymJKLSyS6D5mME%26Expires%3D1741517434%26Signature%3DgNMt5N%252FcCjjQBTIebnYKnTGlWZ0%253D%22": 1,
+  "https://www.hzhjh.com.cn/sys-nd/%22https%3A%2F%2Fimg2-cloud.itouchtv.cn%2Fpriv%2Ftvtouchtv%2Fimage%2F20250309%2F1741510289134635-1354.png%3FOSSAccessKeyId%3DLTAI5tM3ViymJKLSyS6D5mME%26Expires%3D1741517489%26Signature%3DHmhikqQqN66Z3xLHpT2oxOSViSs%253D%22": 1
+ }
+}

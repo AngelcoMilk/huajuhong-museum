@@ -1,0 +1,89 @@
+{
+  "source": "© OpenStreetMap contributors（ODbL 1.0）",
+  "towns": [
+    {
+      "name": "平定镇",
+      "lng": 110.4101254,
+      "lat": 22.0265016,
+      "kind": "town",
+      "side": "left"
+    },
+    {
+      "name": "那务镇",
+      "lng": 110.587403,
+      "lat": 22.00389,
+      "kind": "town",
+      "side": "right"
+    },
+    {
+      "name": "江湖镇",
+      "lng": 110.5997224,
+      "lat": 21.8715698,
+      "kind": "town",
+      "side": "right"
+    },
+    {
+      "name": "中垌镇",
+      "lng": 110.4716358,
+      "lat": 21.8400226,
+      "kind": "town",
+      "side": "left"
+    },
+    {
+      "name": "官桥镇",
+      "lng": 110.4995456,
+      "lat": 21.7356899,
+      "kind": "town",
+      "side": "left"
+    },
+    {
+      "name": "石湾街道",
+      "lng": 110.538415,
+      "lat": 21.661196,
+      "kind": "town",
+      "side": "left"
+    },
+    {
+      "name": "鉴江街道",
+      "lng": 110.649662,
+      "lat": 21.664767,
+      "kind": "suburb",
+      "side": "above-right"
+    },
+    {
+      "name": "河西街道",
+      "lng": 110.6264397,
+      "lat": 21.6565373,
+      "kind": "suburb",
+      "side": "left"
+    },
+    {
+      "name": "东山街道",
+      "lng": 110.6403501,
+      "lat": 21.6558133,
+      "kind": "suburb",
+      "side": "right"
+    },
+    {
+      "name": "下郭街道",
+      "lng": 110.6334293,
+      "lat": 21.6399173,
+      "kind": "suburb",
+      "side": "below"
+    },
+    {
+      "name": "新安镇",
+      "lng": 110.423083,
+      "lat": 21.652974,
+      "kind": "town",
+      "side": "left"
+    },
+    {
+      "name": "同庆镇",
+      "lng": 110.691233,
+      "lat": 21.5951296,
+      "kind": "town",
+      "side": "right"
+    }
+  ]
+}

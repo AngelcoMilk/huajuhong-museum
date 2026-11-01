@@ -1,0 +1,146 @@
+/* —— 正文块（园区栏目、博物馆文章、史料阅读、后台预览共用） —— */
+.hall-blocks {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: var(--fs-body);
+  line-height: 2.05;
+  color: var(--ink-2);
+}
+.hall-blocks strong { font-weight: 600; color: var(--ink); }
+.hall-blocks .is-center { text-align: center; }
+.hall-blocks .is-right { text-align: right; }
+
+.hall-blocks__p {
+  margin: 0 0 0.9em;
+  text-align: justify;
+  text-justify: inter-ideograph;
+  white-space: pre-line;
+}
+
+.hall-blocks__h2,
+.hall-blocks__h3 {
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.hall-blocks__h2 { margin: 1.9em 0 0.8em; font-size: var(--fs-h2); }
+.hall-blocks__h3 { margin: 1.7em 0 0.7em; font-size: var(--fs-h3); }
+.hall-blocks__h2:first-child,
+.hall-blocks__h3:first-child { margin-top: 0; }
+
+.hall-blocks__note {
+  margin: 0.4em 0 1em;
+  font-size: var(--fs-micro);
+  color: var(--ink-3);
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.hall-blocks__fig { margin: 1.4em 0; text-align: center; }
+.hall-blocks__fig.is-left { text-align: left; }
+.hall-blocks__fig img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: top;
+  filter: saturate(0.9);
+}
+.hall-blocks__fig figcaption,
+.hall-blocks__row figcaption,
+.hall-blocks__media figcaption {
+  margin-top: 8px;
+  font-size: var(--fs-micro);
+  line-height: 1.7;
+  color: var(--ink-3);
+  text-align: center;
+  letter-spacing: 0.04em;
+}
+
+.hall-blocks__row { margin: 1.4em 0; }
+.hall-blocks__rowin {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr));
+  gap: 10px;
+}
+.hall-blocks__rowin img {
+  display: block;
+  width: 100%;
+  height: auto;
+  filter: saturate(0.9);
+}
+
+.hall-blocks__quote {
+  margin: 1.2em 0;
+  padding: 2px 0 2px 1.1em;
+  border-left: 2px solid rgb(var(--red-rgb) / 0.55);
+  font-family: var(--font-kai);
+  color: var(--ink);
+  white-space: pre-line;
+}
+
+.hall-blocks__list { margin: 0 0 1em; padding-left: 1.6em; }
+.hall-blocks__list li { margin-bottom: 0.3em; }
+
+.hall-blocks__tablewrap {
+  max-width: 100%;
+  margin: 1.2em 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+.hall-blocks__tablewrap:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.hall-blocks__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  line-height: 1.75;
+  overflow-wrap: normal;
+}
+.hall-blocks__table th,
+.hall-blocks__table td {
+  min-width: 4em;
+  padding: 7px 10px;
+  border: 1px solid rgb(var(--ink-rgb) / 0.18);
+  text-align: left;
+  vertical-align: top;
+}
+.hall-blocks__table th {
+  font-weight: 600;
+  color: var(--ink);
+  background: rgb(var(--ink-rgb) / 0.05);
+}
+
+.hall-blocks__media { margin: 1.4em 0; }
+.hall-blocks__media video {
+  display: block;
+  width: 100%;
+  max-height: 72vh;
+  background: var(--night);
+}
+.hall-blocks__media audio {
+  display: block;
+  width: 100%;
+  min-height: 44px;
+}
+.hall-blocks__miss {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid rgb(var(--ink-rgb) / 0.18);
+  font-size: var(--fs-small);
+  color: var(--ink-3);
+  text-align: center;
+}
+
+.hall-blocks__hr {
+  height: 1px;
+  margin: 1.8em 0;
+  border: 0;
+  background: rgb(var(--ink-rgb) / 0.2);
+}
+
+@media (max-width: 860px) {
+  .hall-blocks__p { text-align: left; }
+  .hall-blocks__p.is-center { text-align: center; }
+  .hall-blocks__p.is-right { text-align: right; }
+}

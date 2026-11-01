@@ -1,0 +1,147 @@
+/* 后台令牌：暖陶仪表盘 + Liquid Glass。
+   只作用于 .admin-root，与前台 styles/tokens.css 是两套；页面里不写裸色值。 */
+
+.admin-root {
+  color-scheme: light;
+
+  --bg: #f4f1ec;
+  --surface: #fbfaf8;
+  --surface-2: #f1ede7;
+  --surface-3: #e9e3db;
+  --line: rgba(60, 40, 20, 0.08);
+  --line-strong: rgba(60, 40, 20, 0.16);
+
+  --text: #1e1a16;
+  --text-2: #6e655c;
+  --text-3: #a39a90;
+
+  --primary: #b4562b;
+  --primary-hover: #a04b24;
+  --primary-press: #8e4220;
+  --primary-tint: #f5e4d9;
+  --on-primary: #ffffff;
+  --primary-text: #a04b24;
+
+  --success: #2e8b57;
+  --success-tint: #e3f1e8;
+  --success-text: #1f6e42;
+  --danger: #d0473c;
+  --danger-tint: #fbe6e3;
+  --danger-text: #b5352b;
+  --warning: #c98a1b;
+  --warning-tint: #faf0dc;
+  --warning-text: #8a5d0c;
+  --info: #3d6e9e;
+
+  --chart-1: #b4562b;
+  --chart-2: #7a3b1e;
+  --chart-3: #2e7d5b;
+  --chart-grid: rgba(60, 40, 20, 0.1);
+  --chart-label: #6e655c;
+
+  /* 背景光斑极淡，只给玻璃一点可透的颜色 */
+  --blob-1: rgba(214, 120, 70, 0.18);
+  --blob-2: rgba(232, 170, 80, 0.14);
+  --blob-3: rgba(90, 140, 110, 0.1);
+
+  /* 玻璃 */
+  --glass-tint: rgba(255, 252, 248, 0.55);
+  --glass-tint-strong: rgba(255, 252, 248, 0.84);
+  --glass-tinted: rgba(150, 70, 33, 0.72);
+  --glass-tinted-deep: rgba(126, 58, 26, 0.72);
+  /* 不支持模糊或减少透明度时的实心底，白字对比度同样要够 4.5 */
+  --glass-tinted-solid: #a04b24;
+  /* 滑块上压白字，比着色主卡实，白字对比度才够 4.5 */
+  --glass-thumb: rgba(160, 75, 36, 0.94);
+  --glass-thumb-deep: rgba(130, 60, 28, 0.94);
+  --glass-thumb-glow: rgba(255, 255, 255, 0.08);
+  --on-tinted: #ffffff;
+  --glass-edge: rgba(255, 255, 255, 0.5);
+  --glass-hi-top: rgba(255, 255, 255, 0.85);
+  --glass-hi-bottom: rgba(255, 255, 255, 0.25);
+  --glass-sheen: rgba(255, 255, 255, 0.45);
+  --glass-shadow: 0 10px 30px -10px rgba(90, 45, 20, 0.25);
+  --glass-pointer: rgba(255, 255, 255, 0.38);
+  --glass-solid: #fbf8f4;
+
+  --scrim: rgba(40, 26, 14, 0.2);
+  --shadow-card: 0 1px 2px rgba(60, 40, 20, 0.04);
+  --shadow-card-hover: 0 10px 24px -14px rgba(90, 45, 20, 0.28);
+  --hover-tint: rgba(60, 40, 20, 0.05);
+  --select-arrow: #6e655c;
+
+  --font-ui: "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", -apple-system, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, Menlo, monospace;
+
+  --r-card: 24px;
+  --r-tile: 12px;
+  --r-input: 12px;
+  --r-full: 999px;
+
+  --ease-glass: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-glass: 240ms;
+}
+
+:root[data-theme="dark"] .admin-root {
+  color-scheme: dark;
+
+  --bg: #161311;
+  --surface: #1f1b18;
+  --surface-2: #2a2420;
+  --surface-3: #352e29;
+  --line: rgba(255, 240, 225, 0.08);
+  --line-strong: rgba(255, 240, 225, 0.18);
+
+  --text: #f3ede6;
+  --text-2: #b3a89c;
+  --text-3: #7d7369;
+
+  --primary: #d9733f;
+  --primary-hover: #e5864f;
+  --primary-press: #c76532;
+  --primary-tint: rgba(217, 115, 63, 0.16);
+  --on-primary: #1b100a;
+  --primary-text: #eb9465;
+
+  --success: #4fb080;
+  --success-tint: rgba(79, 176, 128, 0.16);
+  --success-text: #79cba1;
+  --danger: #e8685c;
+  --danger-tint: rgba(232, 104, 92, 0.16);
+  --danger-text: #f0938a;
+  --warning: #dca63e;
+  --warning-tint: rgba(220, 166, 62, 0.16);
+  --warning-text: #e7c077;
+  --info: #79a7d3;
+
+  --chart-1: #e5864f;
+  --chart-2: #d9b08c;
+  --chart-3: #5cc096;
+  --chart-grid: rgba(255, 240, 225, 0.1);
+  --chart-label: #b3a89c;
+
+  --blob-1: rgba(214, 120, 70, 0.14);
+  --blob-2: rgba(232, 170, 80, 0.08);
+  --blob-3: rgba(90, 140, 110, 0.08);
+
+  --glass-tint: rgba(32, 28, 25, 0.55);
+  --glass-tint-strong: rgba(32, 28, 25, 0.86);
+  --glass-tinted: rgba(170, 80, 38, 0.72);
+  --glass-tinted-deep: rgba(128, 60, 28, 0.72);
+  --glass-tinted-solid: #9c4b1c;
+  --glass-thumb: rgba(176, 84, 40, 0.9);
+  --glass-thumb-deep: rgba(140, 66, 30, 0.9);
+  --glass-edge: rgba(255, 240, 225, 0.14);
+  --glass-hi-top: rgba(255, 240, 225, 0.22);
+  --glass-hi-bottom: rgba(255, 240, 225, 0.06);
+  --glass-sheen: rgba(255, 240, 225, 0.1);
+  --glass-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --glass-pointer: rgba(255, 240, 225, 0.16);
+  --glass-solid: #231e1b;
+
+  --scrim: rgba(0, 0, 0, 0.42);
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.24);
+  --shadow-card-hover: 0 10px 24px -14px rgba(0, 0, 0, 0.7);
+  --hover-tint: rgba(255, 240, 225, 0.06);
+  --select-arrow: #b3a89c;
+}

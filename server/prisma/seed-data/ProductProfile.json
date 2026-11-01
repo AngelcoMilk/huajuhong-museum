@@ -1,0 +1,149 @@
+[
+  {
+    "itemId": "CP-001",
+    "category": "化橘红干果",
+    "variantsJson": "[\"化橘红皮\"]",
+    "thumb": "/img/products/CP-001.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-002",
+    "category": "化橘红干果",
+    "variantsJson": "[\"化橘红果\",\"盒装化橘红果\",\"竹篮装化橘红果\",\"桶装化橘红果\"]",
+    "thumb": "/img/products/CP-002.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-003",
+    "category": "化橘红干果",
+    "variantsJson": "[\"化橘红花\"]",
+    "thumb": "/img/products/CP-003.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-004",
+    "category": "化橘红干果",
+    "variantsJson": "[\"化橘红切片\"]",
+    "thumb": "/img/products/CP-004.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-005",
+    "category": "化橘红干果",
+    "variantsJson": "[\"陈年化橘红皮\"]",
+    "thumb": "/img/products/CP-005.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-006",
+    "category": "化橘红干果",
+    "variantsJson": "[\"陈年化橘红果\"]",
+    "thumb": "/img/products/CP-006.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-007",
+    "category": "化橘红干果",
+    "variantsJson": "[\"七爪化橘红\"]",
+    "thumb": "/img/products/CP-007.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-008",
+    "category": "化橘红干果",
+    "variantsJson": "[\"化橘红丝\"]",
+    "thumb": "/img/products/CP-008.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-009",
+    "category": "化橘红成药",
+    "variantsJson": "[\"橘红颗粒\"]",
+    "thumb": "/img/products/CP-009.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-010",
+    "category": "化橘红制剂",
+    "variantsJson": "[\"化橘红口服液\"]",
+    "thumb": "/img/products/CP-010.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-011",
+    "category": "化橘红饮品",
+    "variantsJson": "[\"化橘红茶\"]",
+    "thumb": "/img/products/CP-011.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-012",
+    "category": "化橘红饮品",
+    "variantsJson": "[\"化橘红霉茶\"]",
+    "thumb": "/img/products/CP-012.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-013",
+    "category": "化橘红饮品",
+    "variantsJson": "[\"化橘红普洱茶\"]",
+    "thumb": "/img/products/CP-013.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-014",
+    "category": "化橘红饮品",
+    "variantsJson": "[\"化橘红栀子茶\"]",
+    "thumb": "/img/products/CP-014.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-015",
+    "category": "化橘红饮品",
+    "variantsJson": "[\"化橘红青果茶\"]",
+    "thumb": "/img/products/CP-015.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-016",
+    "category": "化橘红食品",
+    "variantsJson": "[\"化橘红膏\"]",
+    "thumb": "/img/products/CP-016.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-017",
+    "category": "化橘红食品",
+    "variantsJson": "[\"化橘红糖\"]",
+    "thumb": "/img/products/CP-017.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-018",
+    "category": "化橘红工艺品",
+    "variantsJson": "[\"化橘红茶叶罐\"]",
+    "thumb": "/img/products/CP-018.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-019",
+    "category": "化橘红工艺品",
+    "variantsJson": "[\"化橘红手链\"]",
+    "thumb": "/img/products/CP-019.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-020",
+    "category": "化橘红工艺品",
+    "variantsJson": "[\"化橘红烟盅\"]",
+    "thumb": "/img/products/CP-020.jpg",
+    "shopCandidatesJson": null
+  },
+  {
+    "itemId": "CP-021",
+    "category": "化橘红工艺品",
+    "variantsJson": "[\"化橘红烟斗\"]",
+    "thumb": "/img/products/CP-021.jpg",
+    "shopCandidatesJson": null
+  }
+]

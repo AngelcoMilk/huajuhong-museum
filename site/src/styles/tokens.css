@@ -1,0 +1,99 @@
+/* 全站设计令牌：与 templates/exhibition/museum.css 同源（纸墨印）。
+   改风格先改这里；页面不写裸色值。 */
+:root {
+  --paper: #f4ecdc;
+  --paper-2: #efe5cf;
+  --paper-3: #e2d0af;
+  --paper-hi: #fbf4e8;
+
+  --ink: #2f2420;
+  --ink-2: #6b5545;
+  --ink-3: #7d6553;
+  --rule: rgb(var(--ink-rgb) / 0.14);
+  --rule-2: rgb(var(--ink-rgb) / 0.3);
+
+  --red: #b3321f;
+  --red-2: #8c2415;
+  --seal-ink: #f8efe0;
+  --ling: #e9dcc2;
+  --olive: #262a21;
+  --olive-ink: #ede3cf;
+  --olive-ink-2: #b4ab95;
+  --wood: #8a5a3b;
+  --wood-dark: #5b3a29;
+  --night: #14120f;
+  --leaf: #4f7a3a;
+
+  /* 半透明色的通道值：压在图上、暗厅里都写 rgb(var(--night-rgb) / 0.6)，不写裸值 */
+  --ink-rgb: 47 36 32;
+  --ink-3-rgb: 125 101 83;
+  --paper-hi-rgb: 251 244 232;
+  --gold-rgb: 224 186 92;
+  --night-rgb: 20 18 15;
+  --on-dark-rgb: 237 227 207;
+  --red-rgb: 179 50 31;
+  --seal-ink-rgb: 248 239 224;
+  --paper-rgb: 244 236 220;
+  --paper-2-rgb: 239 229 207;
+  --paper-3-rgb: 226 208 175;
+  --olive-rgb: 38 42 33;
+
+  --font-song: 'HJ Serif', 'Source Han Serif SC', 'Source Han Serif CN', 'Noto Serif SC', 'Songti SC', 'STSong', serif;
+  --font-kai: 'HJ Kai Digits', 'LXGW WenKai', 'LXGW WenKai GB', 'Kaiti SC', 'STKaiti', 'KaiTi', serif;
+
+  --fs-hero: clamp(44px, 7.2vw, 104px);
+  --fs-number: clamp(40px, 5.6vw, 82px);
+  --fs-display: clamp(36px, 5vw, 68px);
+  --fs-h1: clamp(27px, 3.1vw, 42px);
+  --fs-h2: clamp(21px, 2vw, 27px);
+  --fs-h3: clamp(16.5px, 1.3vw, 19px);
+  --fs-lead: clamp(16.5px, 1.3vw, 18.5px);
+  --fs-body: clamp(15.5px, 1.05vw, 17px);
+  --fs-small: 14.5px;
+  --fs-note: 13px;
+  --fs-micro: 12.5px;
+  --fs-tiny: 11px;
+  /* 楷体小字：不小于 13px。字号变了行高不能变，否则下面的块全部错位 */
+  --fs-label: 14px;
+  --lh-micro: calc(var(--fs-micro) * 1.9);
+  --lh-tiny: calc(var(--fs-tiny) * 1.9);
+
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+  --section: clamp(72px, 9vw, 132px);
+  --section-sm: clamp(48px, 6vw, 88px);
+  --gutter: clamp(16px, 4vw, 56px);
+  --max: 1240px;
+  --max-wide: 1440px;
+  /* 全站内容宽度：页头、各段正文、下一展厅、页脚的左右边缘都对齐它 */
+  --content: min(100% - 2 * var(--gutter), var(--max));
+  --measure: 34em;
+  --head-h: 64px;
+
+  /* 子母线：一粗一细 */
+  --zimu-1: rgb(var(--ink-rgb) / 0.5);
+  --zimu-2: rgb(var(--ink-rgb) / 0.2);
+
+  --r-1: 2px;
+  --r-2: 4px;
+
+  --shadow-s: 0 1px 0 rgb(var(--ink-rgb) / 0.05), 0 8px 18px -14px rgb(var(--ink-rgb) / 0.4);
+  --shadow: 0 1px 0 rgb(var(--ink-rgb) / 0.05), 0 18px 40px -24px rgb(var(--ink-rgb) / 0.45);
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-stamp: cubic-bezier(0.5, 0, 0.75, 0);
+  --t-1: 160ms;
+  --t-2: 280ms;
+  --t-3: 600ms;
+  --t-4: 900ms;
+
+  --huiwen: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14'%3E%3Cpath d='M0 13H24M15 13V1H3V10H12V4H6V7.5H9' fill='none' stroke='%232f2420' stroke-width='1.2'/%3E%3C/svg%3E");
+  --huiwen-light: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='14'%3E%3Cpath d='M0 13H24M15 13V1H3V10H12V4H6V7.5H9' fill='none' stroke='%23ede3cf' stroke-width='1.2'/%3E%3C/svg%3E");
+  --tex: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='360' height='360'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.014 0.2' numOctaves='3' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0.42 0 0 0 0 0.33 0 0 0 0 0.22 0.8 0 0 0 -0.56'/%3E%3C/filter%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='2' seed='8'/%3E%3CfeColorMatrix values='0 0 0 0 0.38 0 0 0 0 0.3 0 0 0 0 0.22 1.05 0 0 0 -0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23a)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E");
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "id": "museum-hall",
+    "page": "museum",
+    "name": "馆内场景",
+    "sort": 0,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "museum-workshop",
+    "page": "museum",
+    "name": "配套车间",
+    "sort": 1,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "park-daling",
+    "page": "park",
+    "name": "中华化橘红第一村（大岭村）",
+    "sort": 2,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "park-hongfeng",
+    "page": "park",
+    "name": "红峰农场",
+    "sort": 0,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "park-meihua",
+    "page": "park",
+    "name": "广东美华化橘红产业园",
+    "sort": 1,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "park-nongken",
+    "page": "park",
+    "name": "农垦农业公园",
+    "sort": 3,
+    "layout": "grid",
+    "visible": 1
+  },
+  {
+    "id": "park-xintang",
+    "page": "park",
+    "name": "新塘村—山鸡塘村",
+    "sort": 4,
+    "layout": "grid",
+    "visible": 1
+  }
+]

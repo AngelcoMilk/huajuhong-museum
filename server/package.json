@@ -1,0 +1,31 @@
+{
+  "name": "huajuhong-guide-server",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "engines": {
+    "node": ">=22.18"
+  },
+  "scripts": {
+    "postinstall": "prisma generate",
+    "dev": "node --env-file=.env --watch src/index.ts",
+    "start": "node --env-file=.env src/index.ts",
+    "db:migrate": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
+    "db:seed": "node --env-file=.env prisma/seed.ts",
+    "db:studio": "prisma studio",
+    "test": "node scripts/test-run.mjs",
+    "test:live": "LIVE=1 node --test test/live.test.ts",
+    "kb:check": "node src/kb-check.ts",
+    "kb:verify": "node src/kb-verify.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.19.0",
+    "@mariozechner/pi-ai": "0.73.1",
+    "@mariozechner/pi-coding-agent": "0.73.1",
+    "@prisma/client": "^6.19.3",
+    "hono": "^4.10.0",
+    "prisma": "^6.19.3",
+    "qrcode": "^1.5.4"
+  }
+}

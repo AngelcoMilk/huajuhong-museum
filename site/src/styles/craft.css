@@ -1,0 +1,258 @@
+/* 工艺厅：3D 铺满浏览器宽度；数据带、机器区、下一展厅同一底色、同一内容宽度。 */
+.craft { padding-bottom: 0; }
+
+/* —— 3D 舞台：高度不超过一屏；再矮的窗口也不压扁到 2.4:1 以下 —— */
+.craft-stage { position: relative; width: 100%; background: var(--paper-2); }
+.craft-stage__view {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: max(calc(100svh - var(--head-h)), 41.67vw);
+  overflow: hidden;
+}
+.craft-stage iframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  opacity: 0;
+  transition: opacity var(--t-3) var(--ease-out);
+}
+.craft-stage.is-ready iframe { opacity: 1; }
+.craft-stage__state { display: grid; place-items: center; padding: var(--gutter); }
+
+/* 加载态：只动 transform 和 opacity，3D 建场景占住主线程时也不停 */
+.craft-loader {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--sp-3);
+  background: var(--paper-2);
+  transition: opacity var(--t-3) var(--ease-out), visibility 0s linear var(--t-3);
+}
+.craft-stage.is-ready .craft-loader { opacity: 0; visibility: hidden; }
+.craft-loader .ex-load { padding: 0; border: 0; }
+.craft-loader .ex-load b { font-size: var(--fs-small); font-weight: 400; color: var(--ink-2); }
+.craft-loader__seal {
+  --seal: 56px;
+  animation: craft-breathe 1.6s var(--ease-inout) infinite alternate;
+}
+.craft-loader__line {
+  position: relative;
+  width: 120px;
+  height: 2px;
+  overflow: hidden;
+  background: var(--rule);
+}
+.craft-loader__line::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--red);
+  animation: craft-sweep 1.5s var(--ease-inout) infinite;
+}
+@keyframes craft-breathe { from { opacity: 0.4; } to { opacity: 1; } }
+@keyframes craft-sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+
+.craft-stage__down {
+  position: absolute;
+  left: 50%;
+  bottom: var(--sp-3);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -22px;
+  padding: 0;
+  border: 0;
+  background: rgb(var(--on-dark-rgb) / 0.72);
+  color: var(--ink);
+  cursor: pointer;
+  animation: craft-float 1.8s var(--ease-inout) infinite alternate;
+}
+.craft-stage__down svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.craft-stage__down:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+@keyframes craft-float { from { transform: translateY(-3px); } to { transform: translateY(4px); } }
+
+.craft-stage__enter { display: none; }
+.craft-stage__exit {
+  position: absolute;
+  top: var(--sp-3);
+  right: var(--sp-3);
+  min-height: 44px;
+  padding: 0 var(--sp-4);
+  border: 1px solid rgb(var(--on-dark-rgb) / 0.5);
+  background: rgb(var(--night-rgb) / 0.62);
+  color: var(--paper-hi);
+  font: inherit;
+  font-family: var(--font-kai);
+  font-size: var(--fs-small);
+  cursor: pointer;
+}
+.craft-stage.is-immersive { position: fixed; inset: 0; z-index: 100; }
+.craft-stage.is-immersive .craft-stage__view { height: 100%; max-height: none; aspect-ratio: auto; }
+.craft-locked { overflow: hidden; }
+
+/* —— 数据带 —— */
+.craft-band {
+  width: var(--content);
+  margin: 0 auto;
+  padding: var(--sp-5) 0 0;
+  scroll-margin-top: var(--head-h);
+}
+.craft-band .ex-stats { border-top: 0; }
+.craft-band .ex-stats li { padding-top: 0; }
+.craft-band .ex-stats__label { font-size: var(--fs-small); line-height: calc(var(--fs-small) * 1.9); letter-spacing: 0.08em; color: var(--ink-2); }
+.craft-band .ex-stats__value span { font-size: var(--fs-small); }
+
+/* —— 五台机器 —— */
+.craft-machines {
+  width: var(--content);
+  margin: 0 auto;
+  padding: var(--sp-6) 0 var(--sp-6);
+}
+.craft-machines .ex-head { margin-bottom: var(--sp-4); }
+
+.craft-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+.craft-tab {
+  position: relative;
+  display: block;
+  min-height: 44px;
+  padding: var(--sp-2);
+  border: 1px solid rgb(var(--ink-rgb) / 0.24);
+  background: rgb(var(--paper-hi-rgb) / 0.55);
+  color: var(--ink-2);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out);
+}
+.craft-tab img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: var(--sp-2);
+  opacity: 0.75;
+  transition: opacity var(--t-1) var(--ease-out);
+}
+.craft-tab__hand { display: block; font-family: var(--font-kai); font-size: var(--fs-label); line-height: var(--lh-micro); letter-spacing: 0.1em; color: var(--ink-2); }
+.craft-tab__name { display: block; font-size: var(--fs-small); font-weight: 600; letter-spacing: 0.02em; }
+.craft-tab:hover { border-color: var(--ink-2); color: var(--ink); }
+.craft-tab:hover img { opacity: 1; }
+.craft-tab:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.craft-tab.is-on { border-color: var(--red); color: var(--ink); }
+.craft-tab.is-on img { opacity: 1; }
+.craft-tab.is-on .craft-tab__hand { color: var(--red); }
+/* 选中项往下指向机器图 */
+.craft-tab.is-on::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-right: 2px solid var(--red);
+  border-bottom: 2px solid var(--red);
+  background: var(--paper-hi);
+  transform: rotate(45deg);
+}
+
+.craft-viewer {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 52px;
+  gap: var(--sp-2);
+  align-items: start;
+}
+/* 箭头对着机器图的中段，不跟随滚动 */
+.craft-arrow--prev,
+.craft-viewer__next { margin-top: 240px; }
+.craft-viewer__next { position: relative; display: grid; justify-items: center; }
+.craft-viewer__count {
+  position: absolute;
+  top: calc(100% + var(--sp-2));
+  white-space: nowrap;
+  font-family: var(--font-kai);
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.craft-arrow {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  padding: 0;
+  border: 1px solid var(--rule-2);
+  background: var(--paper-hi);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out), border-color var(--t-1) var(--ease-out);
+}
+.craft-arrow svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 1.8; }
+.craft-arrow:hover { background: var(--ink); border-color: var(--ink); color: var(--paper-hi); }
+.craft-arrow:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+.craft-plate { min-width: 0; background: var(--paper-hi); border: 1px solid var(--rule-2); }
+.craft-plate__figure { position: relative; min-height: 480px; }
+.craft-plate iframe { display: block; width: 100%; min-height: 200px; border: 0; }
+.craft-plate__state { position: absolute; inset: 0; display: grid; place-items: center; }
+.craft-plate__state .ex-load { border: 0; }
+.craft-plate__bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-top: 1px solid var(--rule);
+}
+.craft-plate__bar p { margin: 0; font-size: var(--fs-small); line-height: 1.8; color: var(--ink-2); }
+.craft-plate__bar b { margin-right: var(--sp-3); font-weight: 600; color: var(--ink); }
+.craft-plate__bar .btn { flex: none; min-height: 44px; padding: 0 var(--sp-4); font-size: var(--fs-small); }
+.craft-plate:fullscreen { display: flex; flex-direction: column; overflow: auto; }
+.craft-plate:fullscreen .craft-plate__figure { flex: 1 0 auto; }
+
+/* —— 响应 —— */
+@media (max-width: 860px) {
+  .craft-stage:not(.is-immersive) .craft-stage__enter {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    min-height: 44px;
+    border-width: 0;
+    border-radius: 0;
+    background: var(--ink);
+    color: var(--paper-hi);
+  }
+  .craft-band { padding-top: var(--sp-4); }
+  .craft-band .ex-stats { row-gap: var(--sp-3); }
+  .craft-machines { padding-top: var(--sp-5); }
+  .craft-tabs { gap: var(--sp-1); }
+  .craft-tab { padding: var(--sp-1); text-align: center; }
+  .craft-tab img { margin-bottom: var(--sp-1); }
+  .craft-tab__name { display: none; }
+  .craft-tab__hand { letter-spacing: 0.04em; }
+  /* 窄屏没有两侧的位置：箭头排到图上方的两端，1 / 5 放中间 */
+  .craft-viewer { grid-template-columns: 44px minmax(0, 1fr) 44px; row-gap: var(--sp-2); }
+  .craft-plate { grid-column: 1 / -1; grid-row: 2; }
+  .craft-viewer__next { display: contents; }
+  .craft-viewer__count { position: static; grid-column: 2; grid-row: 1; justify-self: center; }
+  .craft-arrow { width: 44px; height: 44px; }
+  .craft-arrow--prev { grid-column: 1; grid-row: 1; margin-top: 0; }
+  .craft-viewer__next .craft-arrow { grid-column: 3; grid-row: 1; }
+  .craft-plate__figure { min-height: 360px; }
+  .craft-plate__bar { align-items: flex-start; padding: var(--sp-3); }
+  .craft-plate__bar b { display: block; margin-right: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .craft-loader__seal,
+  .craft-loader__line::after,
+  .craft-stage__down { animation: none; }
+}

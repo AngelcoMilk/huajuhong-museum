@@ -1,0 +1,13 @@
+node_modules/
+*.log
+.env
+prisma/*.db
+prisma/*.db-journal
+prisma/*.db-wal
+prisma/*.db-shm
+uploads/*
+!uploads/.gitkeep
+logs/*
+!logs/.gitkeep
+# 讲解员的隔离 agent 目录（运行时生成）
+.agentdir/

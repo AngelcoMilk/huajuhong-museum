@@ -1,0 +1,245 @@
+{
+  "generatedFrom": "materials/02-博物馆展示.json + 06-VR全景.json",
+  "groups": [
+    {
+      "key": "hall",
+      "name": "馆内场景",
+      "scenes": [
+        {
+          "id": "BO-001",
+          "title": "公司正门大堂",
+          "gid": "91984",
+          "sceneId": "scene628757",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613609/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613609/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613609/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628757.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-002",
+          "title": "化橘红博物馆1",
+          "gid": "91984",
+          "sceneId": "scene628764",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613602/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613602/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613602/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628764.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-003",
+          "title": "化橘红博物馆2",
+          "gid": "91984",
+          "sceneId": "scene628763",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613603/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613603/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613603/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628763.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-004",
+          "title": "化橘红博物馆3",
+          "gid": "91984",
+          "sceneId": "scene628762",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613604/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613604/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613604/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628762.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-005",
+          "title": "化橘红博物馆4",
+          "gid": "91984",
+          "sceneId": "scene628761",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613605/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613605/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613605/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628761.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-006",
+          "title": "化橘红博物馆5",
+          "gid": "91984",
+          "sceneId": "scene628760",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613606/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613606/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613606/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628760.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-007",
+          "title": "化橘红博物馆6",
+          "gid": "91984",
+          "sceneId": "scene628759",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613607/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613607/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613607/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628759.jpg",
+          "group": "hall"
+        },
+        {
+          "id": "BO-008",
+          "title": "橘香体验馆",
+          "gid": "91984",
+          "sceneId": "scene628758",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613608/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613608/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613608/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628758.jpg",
+          "group": "hall"
+        }
+      ]
+    },
+    {
+      "key": "workshop",
+      "name": "配套车间",
+      "scenes": [
+        {
+          "id": "BO-009",
+          "title": "生产车间1",
+          "gid": "91984",
+          "sceneId": "scene628765",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613937/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613937/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613937/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628765.jpg",
+          "group": "workshop"
+        },
+        {
+          "id": "BO-010",
+          "title": "生产车间2",
+          "gid": "91984",
+          "sceneId": "scene628767",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613599/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613599/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613599/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628767.jpg",
+          "group": "workshop"
+        },
+        {
+          "id": "BO-011",
+          "title": "生产车间3",
+          "gid": "91984",
+          "sceneId": "scene628766",
+          "slices": 1020,
+          "thumb": "https://imj.kuleiman.com/132221/scene/scene613600/pano_thumb.jpg?1646792560",
+          "preview": "https://imj.kuleiman.com/132221/scene/scene613600/view/preview.jpg?1646792560",
+          "panoUrl": "https://live.kuleiman.com/static/live/public/pano.html?tileserver=132221/scene/scene613600/view/&work_id=147899",
+          "thumbLocal": "/img/vr/scene628766.jpg",
+          "group": "workshop"
+        }
+      ]
+    }
+  ],
+  "articles": [
+    {
+      "truncated": true,
+      "id": "BO-A01",
+      "title": "【“振兴中医药”采风稿】黄景隆 · 化橘红博览馆印象（散文）",
+      "sub": "博览馆文章",
+      "date": "2024-06-04 20:45",
+      "sourceUrl": "https://www.hzhjh.com.cn/sys-nd/538.html",
+      "text": "5月22日，随化州市作家协会、市中医药事业发展中心组织的“振兴中医药，化州作家在行动”采风团，走进化橘红博览馆，穿越千年时空，感受化橘红的今生前世，领略化橘红超然的风采。 走近化橘红博览馆，穿越千年时空，我深深感受到化橘红的今生前世。 走进化橘红博览馆，我看到了一部浓缩千年的化橘红发展史。化橘红，种植于晋代、发展于隋、唐、宋、元朝，盛名于明、清朝，成为令人称道的宫廷贡品，太医推崇备至之御用药物。 化橘红从生产到发展，\"红\"了一千多年，化",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "5月22日，随化州市作家协会、市中医药事业发展中心组织的“振兴中医药，化州作家在行动”采风团，走进化橘红博览馆，穿越千年时空，感受化橘红的今生前世，领略化橘红超然的风采。 走近化橘红博览馆，穿越千年时空，我深深感受到化橘红的今生前世。 走进化橘红博览馆，我看到了一部浓缩千年的化橘红发展史。化橘红，种植于晋代、发展于隋、唐、宋、元朝，盛名于明、清朝，成为令人称道的宫廷贡品，太医推崇备至之御用药物。 化橘红从生产到发展，\"红\"了一千多年，化"
+        }
+      ],
+      "usage": "博物馆背景/采风引用",
+      "caution": "散文/新闻口径",
+      "copyright": "官网转载，标注来源"
+    },
+    {
+      "truncated": true,
+      "id": "BO-A02",
+      "title": "【“振兴中医药”采风稿】黎贵 · 化橘红博览馆走笔（散文）",
+      "sub": "博览馆文章",
+      "date": "2024-06-04 20:52",
+      "sourceUrl": "https://www.hzhjh.com.cn/sys-nd/540.html",
+      "text": "天赐一瑰宝，道地化橘红。 作为土生土长的化州人，对化橘红，我一往情深，痴恋有加。 为推动化橘红产业加快发展，我写了不少推文和提案，参与制定了化橘红胎广东省食品安全地方标准，跟进落实化橘红药食同源申报工作，见证了化橘红的发展壮大，内心一度喜悦。 两年前，我跟随市领导参观考察了新会陈皮产业博览中心、中国荔枝博物馆，回来后，原本的自豪感却一点点消减了，有种失落久绕心头，挥之不去。究其原因，是因为家乡没有一个像样的、可以集中展示化橘红前世、今生",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "天赐一瑰宝，道地化橘红。 作为土生土长的化州人，对化橘红，我一往情深，痴恋有加。 为推动化橘红产业加快发展，我写了不少推文和提案，参与制定了化橘红胎广东省食品安全地方标准，跟进落实化橘红药食同源申报工作，见证了化橘红的发展壮大，内心一度喜悦。 两年前，我跟随市领导参观考察了新会陈皮产业博览中心、中国荔枝博物馆，回来后，原本的自豪感却一点点消减了，有种失落久绕心头，挥之不去。究其原因，是因为家乡没有一个像样的、可以集中展示化橘红前世、今生"
+        }
+      ],
+      "usage": "博物馆背景/采风引用",
+      "caution": "散文/新闻口径",
+      "copyright": "官网转载，标注来源"
+    },
+    {
+      "truncated": true,
+      "id": "BO-A03",
+      "title": "喜讯！化橘红博览馆获评茂名市社会科学普及基地",
+      "sub": "博览馆文章",
+      "date": "2024-07-26 16:57",
+      "sourceUrl": "https://www.hzhjh.com.cn/sys-nd/548.html",
+      "text": "6月12日下午，茂名市社会科学界联合会在化橘红博览馆举办2024年社会科学普及周主题日活动。会议宣布茂名市社科普及周活动启动，活动主要内容包括社科普及工作经验交流，播放化橘红科普短视频，专家授课，参观化橘红博览馆社科普及建设情况等，以及为化橘红博览馆科普基地挂牌。茂名市及各区（县级市）社科部门有关领导，社科专家，省级社科普及示范基地相关人员、市级社科普及示范基地代表等近40人参加会议。 化橘红博览馆被授予“茂名市社会科学普及基地”称号，",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "6月12日下午，茂名市社会科学界联合会在化橘红博览馆举办2024年社会科学普及周主题日活动。会议宣布茂名市社科普及周活动启动，活动主要内容包括社科普及工作经验交流，播放化橘红科普短视频，专家授课，参观化橘红博览馆社科普及建设情况等，以及为化橘红博览馆科普基地挂牌。茂名市及各区（县级市）社科部门有关领导，社科专家，省级社科普及示范基地相关人员、市级社科普及示范基地代表等近40人参加会议。 化橘红博览馆被授予“茂名市社会科学普及基地”称号，"
+        }
+      ],
+      "usage": "博物馆背景/采风引用",
+      "caution": "散文/新闻口径",
+      "copyright": "官网转载，标注来源"
+    },
+    {
+      "truncated": true,
+      "id": "BO-A04",
+      "title": "上榜了！化州两个化橘红旅游区成功获批国家3A级旅游景区！",
+      "sub": "博览馆文章",
+      "date": "2026-10-12 21:00",
+      "sourceUrl": "https://www.hzhjh.com.cn/sys-nd/759.html",
+      "text": "2026年10月10日，茂名市文化广电旅游体育局发布公告：根据中华人民共和国国家标准《旅游景区质量等级划分》与《旅游景区质量等级管理办法》，经各区（市）以及经济功能区文化和旅游部门推荐，茂名市文化广电旅游体育局按程序组织综合评定并完成公示，确定5家旅游景区为国家3A级旅游景区。 其中，化州两个化橘红产业相关景区成功上榜： 1. 化州化橘红博览馆文化旅游景区 2. 化州金岭化橘红生态旅游区 此次两家化橘红景区成功获批国家3A级旅游景区，标",
+      "blocks": [
+        {
+          "kind": "p",
+          "text": "2026年10月10日，茂名市文化广电旅游体育局发布公告：根据中华人民共和国国家标准《旅游景区质量等级划分》与《旅游景区质量等级管理办法》，经各区（市）以及经济功能区文化和旅游部门推荐，茂名市文化广电旅游体育局按程序组织综合评定并完成公示，确定5家旅游景区为国家3A级旅游景区。 其中，化州两个化橘红产业相关景区成功上榜： 1. 化州化橘红博览馆文化旅游景区 2. 化州金岭化橘红生态旅游区 此次两家化橘红景区成功获批国家3A级旅游景区，标"
+        }
+      ],
+      "usage": "博物馆背景/采风引用",
+      "caution": "散文/新闻口径",
+      "copyright": "官网转载，标注来源"
+    }
+  ],
+  "stats": [
+    {
+      "value": "8",
+      "unit": "个",
+      "label": "馆内全景场景"
+    },
+    {
+      "value": "3",
+      "unit": "个",
+      "label": "配套生产车间场景"
+    },
+    {
+      "value": "4",
+      "unit": "篇",
+      "label": "博览馆相关文章"
+    },
+    {
+      "value": "3A",
+      "unit": "级",
+      "label": "国家旅游景区 · 2026 年获批"
+    }
+  ]
+}

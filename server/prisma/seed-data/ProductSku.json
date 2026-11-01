@@ -1,0 +1,242 @@
+[
+  {
+    "id": "CP-001-01",
+    "itemId": "CP-001",
+    "variantName": "化橘红皮",
+    "priceCents": 5900,
+    "stock": 60,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-002-01",
+    "itemId": "CP-002",
+    "variantName": "化橘红果",
+    "priceCents": 6900,
+    "stock": 55,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-002-02",
+    "itemId": "CP-002",
+    "variantName": "盒装化橘红果",
+    "priceCents": 8900,
+    "stock": 74,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 1
+  },
+  {
+    "id": "CP-002-03",
+    "itemId": "CP-002",
+    "variantName": "竹篮装化橘红果",
+    "priceCents": 12900,
+    "stock": 45,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 2
+  },
+  {
+    "id": "CP-002-04",
+    "itemId": "CP-002",
+    "variantName": "桶装化橘红果",
+    "priceCents": 10900,
+    "stock": 44,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 3
+  },
+  {
+    "id": "CP-003-01",
+    "itemId": "CP-003",
+    "variantName": "化橘红花",
+    "priceCents": 4900,
+    "stock": 18,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-004-01",
+    "itemId": "CP-004",
+    "variantName": "化橘红切片",
+    "priceCents": 7900,
+    "stock": 49,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-005-01",
+    "itemId": "CP-005",
+    "variantName": "陈年化橘红皮",
+    "priceCents": 3900,
+    "stock": 32,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-006-01",
+    "itemId": "CP-006",
+    "variantName": "陈年化橘红果",
+    "priceCents": 4900,
+    "stock": 47,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-007-01",
+    "itemId": "CP-007",
+    "variantName": "七爪化橘红",
+    "priceCents": 12900,
+    "stock": 54,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-008-01",
+    "itemId": "CP-008",
+    "variantName": "化橘红丝",
+    "priceCents": 9900,
+    "stock": 57,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-009-01",
+    "itemId": "CP-009",
+    "variantName": "橘红颗粒",
+    "priceCents": 8900,
+    "stock": 76,
+    "purchasable": 0,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-010-01",
+    "itemId": "CP-010",
+    "variantName": "化橘红口服液",
+    "priceCents": 5900,
+    "stock": 30,
+    "purchasable": 0,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-011-01",
+    "itemId": "CP-011",
+    "variantName": "化橘红茶",
+    "priceCents": 5900,
+    "stock": 35,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-012-01",
+    "itemId": "CP-012",
+    "variantName": "化橘红霉茶",
+    "priceCents": 5900,
+    "stock": 36,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-013-01",
+    "itemId": "CP-013",
+    "variantName": "化橘红普洱茶",
+    "priceCents": 4900,
+    "stock": 37,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-014-01",
+    "itemId": "CP-014",
+    "variantName": "化橘红栀子茶",
+    "priceCents": 2900,
+    "stock": 54,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-015-01",
+    "itemId": "CP-015",
+    "variantName": "化橘红青果茶",
+    "priceCents": 4900,
+    "stock": 35,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-016-01",
+    "itemId": "CP-016",
+    "variantName": "化橘红膏",
+    "priceCents": 2900,
+    "stock": 60,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-017-01",
+    "itemId": "CP-017",
+    "variantName": "化橘红糖",
+    "priceCents": 4900,
+    "stock": 73,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-018-01",
+    "itemId": "CP-018",
+    "variantName": "化橘红茶叶罐",
+    "priceCents": 9900,
+    "stock": 42,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-019-01",
+    "itemId": "CP-019",
+    "variantName": "化橘红手链",
+    "priceCents": 9900,
+    "stock": 31,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-020-01",
+    "itemId": "CP-020",
+    "variantName": "化橘红烟盅",
+    "priceCents": 12900,
+    "stock": 47,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  },
+  {
+    "id": "CP-021-01",
+    "itemId": "CP-021",
+    "variantName": "化橘红烟斗",
+    "priceCents": 14900,
+    "stock": 74,
+    "purchasable": 1,
+    "status": "on",
+    "sort": 0
+  }
+]

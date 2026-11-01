@@ -1,0 +1,42 @@
+[
+  {
+    "key": "analysis.model",
+    "value": "",
+    "updatedAt": 1793447884911
+  },
+  {
+    "key": "analysis.provider",
+    "value": "",
+    "updatedAt": 1793447884909
+  },
+  {
+    "key": "guide.enabled",
+    "value": "true",
+    "updatedAt": 1793447884908
+  },
+  {
+    "key": "page.museum",
+    "value": "{\"title\":\"博物馆\",\"intro\":\"正门大堂、博物馆 1 到 6、橘香体验馆，共 8 个全景场景。\",\"heroImage\":\"/img/board-museum.jpg\",\"stats\":[{\"value\":\"8\",\"unit\":\"个\",\"label\":\"馆内全景场景\"},{\"value\":\"3\",\"unit\":\"个\",\"label\":\"配套生产车间场景\"},{\"value\":\"4\",\"unit\":\"篇\",\"label\":\"博览馆相关文章\"},{\"value\":\"3A\",\"unit\":\"级\",\"label\":\"国家旅游景区 · 2026 年获批\"}]}",
+    "updatedAt": 1793397673658
+  },
+  {
+    "key": "page.park",
+    "value": "{\"title\":\"园区展示\",\"intro\":\"化橘红产业园，2022 年园内种植面积 10.2 万亩，占全市 90.2% 以上。\",\"heroImage\":\"/img/board-park.jpg\",\"stats\":[{\"value\":\"10.2\",\"unit\":\"万亩\",\"label\":\"园区化橘红种植面积 · 占全市 90.2%\"},{\"value\":\"79.29\",\"unit\":\"亿元\",\"label\":\"园区化橘红总产值 · 2022\"},{\"value\":\"30\",\"unit\":\"万人\",\"label\":\"直接带动种植的农民\"},{\"value\":\"36\",\"unit\":\"个\",\"label\":\"园区全景场景 · 五处基地\"}]}",
+    "updatedAt": 1793397673657
+  },
+  {
+    "key": "shop.demoPriceEnabled",
+    "value": "true",
+    "updatedAt": 1793258526371
+  },
+  {
+    "key": "site.notice",
+    "value": "本系统为毕业设计作品，内容整理自公开资料，非官方网站。",
+    "updatedAt": 1793447884906
+  },
+  {
+    "key": "site.title",
+    "value": "化州橘红博览馆数字化展示系统",
+    "updatedAt": 1793447884904
+  }
+]

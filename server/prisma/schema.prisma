@@ -1,0 +1,447 @@
+// 化州橘红博览馆 · 后台数据模型
+// 本地演示用 SQLite；切 MySQL 只改 provider（字段已按可移植写法）。
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── 内容域 ──────────────────────────────────────────────
+model Item {
+  id        String   @id                  // 素材编号 YQ/BO/LS/CP/QY/VR
+  board     String                        // park | museum | history | product | enterprise | vr
+  section   String   @default("")         // 栏目（materials 的 sub）
+  type      String   @default("article")
+  title     String
+  date      String?
+  sourceUrl String?
+  body      String?
+  labelJson String?
+  status    String   @default("published") // draft | published | archived
+  // 展项新增字段（契约内容契约 §2）：只给 park/museum/history 用，其他板块留空
+  subtitle   String?
+  summary    String?
+  author     String?
+  sourceName String?
+  coverUrl   String?
+  /** 正文块 JSON（Block[]），权威来源；body 由它生成，只作检索用 */
+  blocksJson String?
+  /** 园区栏目树：只有 park 用，子文章挂到栏目的 id 上（一层） */
+  parentId   String?
+  /** 后台草稿：published 行存未发布改动，线上内容不动（契约外，仅后台） */
+  draftJson  String?
+  sort      Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  media      ItemMedia[]
+  enterprise EnterpriseProfile?
+  product    ProductProfile?
+
+  @@index([board, section])
+  @@index([status])
+  @@index([board, status])
+  @@index([parentId])
+}
+
+model ItemMedia {
+  id     String  @id @default(cuid())
+  itemId String
+  kind   String  @default("image") // image | video
+  usage  String?
+  url    String
+  alt    String?
+  sort   Int     @default(0)
+  status String  @default("published")
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@index([itemId])
+}
+
+model EnterpriseProfile {
+  itemId      String  @id
+  town        String?
+  address     String?
+  tel         String?
+  email       String?
+  site        String?
+  shopsJson   String?
+  lng         Float?
+  lat         Float?
+  coordSource String?
+  verified    Boolean @default(false)
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+model ProductProfile {
+  itemId            String  @id
+  category          String?
+  variantsJson      String?
+  thumb             String?
+  shopCandidatesJson String?
+
+  item Item @relation(fields: [itemId], references: [id], onDelete: Cascade)
+}
+
+model VrScene {
+  id          String  @id
+  /** 旧的分组名（园区 / 博物馆）：只作分组列的同步镜像，真实归属看 groupId */
+  group       String  @default("")
+  gid         String?
+  sceneId     String?
+  title       String
+  thumb       String?
+  preview     String?
+  iframe      String?
+  status      String  @default("published")
+  /** VrGroup.id，分组的真实归属；空表示未分组 */
+  groupId     String?
+  /** 组内顺序 */
+  sort        Int     @default(0)
+  /** 组内大图（layout=feature 时用） */
+  featured    Boolean @default(false)
+  description String?
+
+  @@index([group])
+  @@index([groupId])
+}
+
+// VR 分组：园区页 / 博物馆页的版式分组（契约第 5 节）
+model VrGroup {
+  id      String  @id
+  page    String                  // park | museum
+  name    String
+  sort    Int     @default(0)
+  /** grid=网格；feature=某几个场景用大图 */
+  layout  String  @default("grid") // grid | feature
+  visible Boolean @default(true)
+
+  @@index([page])
+}
+
+// ── 系统 ────────────────────────────────────────────────
+model AdminUser {
+  id           String   @id @default(cuid())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+  /** 改密后 +1：token 里带同一个版本号，不一致即失效 */
+  tokenVersion Int      @default(0)
+  /** 角色：admin=全部功能；operator=只看统计、只动订单（白名单在 src/admin/permissions.ts） */
+  role         String   @default("admin") // admin | operator
+  /** 停用后旧 token 立即失效（每次请求从库里读） */
+  disabled     Boolean  @default(false)
+  /** 登录成功时写入，账号列表展示用 */
+  lastLoginAt  DateTime?
+  /** true = 还在用初始口令。严格模式下除查看自己/改密/退出外，后台接口一律 403 */
+  mustChangePassword Boolean @default(false)
+}
+
+model Setting {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model ConfigVersion {
+  id          String    @id @default(cuid())
+  versionNo   Int
+  promptJson  String
+  modelJson   String
+  status      String    @default("draft") // draft | published | archived
+  note        String?
+  createdAt   DateTime  @default(now())
+  publishedAt DateTime?
+  /** 发布/回滚时记下的管理员用户名；旧数据为 null */
+  publishedBy String?
+
+  @@index([status])
+}
+
+model Provider {
+  id            String    @id @default(cuid())
+  name          String    @unique // 机器名：^[a-z0-9][a-z0-9._-]{0,39}$，和 pi 的 models.json 同名
+  /** 显示名；为空时前端退回 name */
+  displayName   String?
+  baseUrl       String
+  api           String    @default("openai-completions")
+  keyMode       String    @default("literal") // env | literal
+  apiKeyEnv     String?
+  apiKeyEnc     String?
+  modelsJson    String    @default("[]")
+  enabled       Boolean   @default(true)
+  lastTestAt    DateTime?
+  lastTestOk    Boolean?
+  lastTestError String?
+  createdAt     DateTime  @default(now())
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  actor      String
+  action     String
+  target     String
+  detailJson String?
+  createdAt  DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+}
+
+// ── 知识库 ──────────────────────────────────────────────
+model KbSlice {
+  id        String   @id
+  title     String
+  origin    String?
+  content   String
+  url       String?
+  source    String   @default("")
+  updatedAt DateTime @updatedAt
+
+  @@index([source])
+}
+
+model KbGap {
+  id          String   @id @default(cuid())
+  question    String
+  status      String   @default("pending") // pending | filled | ignored
+  count       Int      @default(1)
+  firstSeenAt DateTime @default(now())
+  lastSeenAt  DateTime @default(now())
+  note        String?
+
+  @@index([status])
+}
+
+// ── 讲解员会话 ──────────────────────────────────────────
+model AgentSession {
+  id              String    @id
+  visitorId       String
+  page            String?
+  ua              String?
+  startedAt       DateTime  @default(now())
+  endedAt         DateTime?
+  endedReason     String? // reset | ttl | idle | open
+  turnCount       Int       @default(0)
+  inputTokens     Int       @default(0)
+  outputTokens    Int       @default(0)
+  finishReason    String?
+  configVersionId String?
+  /** 讲解员测试场产生的会话：不进统计，默认会话列表也隐藏 */
+  isTest          Boolean   @default(false)
+  messages AgentMessage[]
+
+  @@index([startedAt])
+  @@index([visitorId])
+}
+
+model AgentMessage {
+  id              String   @id @default(cuid())
+  sessionId       String
+  role            String // user | assistant | tool
+  content         String
+  citationsJson   String?
+  suggestionsJson String?
+  toolJson        String? // 工具调用与命中数——缺口判定靠它
+  usageJson       String?
+  latencyMs       Int?
+  errorCode       String?
+  createdAt       DateTime @default(now())
+
+  session AgentSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId, createdAt])
+}
+
+// ── 分析 / 埋点 ────────────────────────────────────────
+model AnalysisReport {
+  id              String   @id @default(cuid())
+  kind            String // session | traffic
+  scope           String // session:<id> | incremental | full
+  configVersionId String?
+  sessionCount    Int      @default(0)
+  resultJson      String
+  model           String?
+  tokens          Int      @default(0)
+  createdAt       DateTime @default(now())
+
+  @@index([kind, createdAt])
+}
+
+model TrackEvent {
+  id         String   @id @default(cuid())
+  visitorId  String
+  kind       String // page_view | page_leave | click
+  route      String
+  targetId   String?
+  durationMs Int?
+  netPrefix  String? // 脱敏网段，不存完整 IP
+  ua         String?
+  ts         DateTime @default(now())
+
+  @@index([ts])
+  @@index([route, kind])
+}
+
+model DailyBoardStat {
+  id         String @id @default(cuid())
+  day        String // YYYY-MM-DD
+  board      String
+  pv         Int    @default(0)
+  uv         Int    @default(0)
+  avgDwellMs Int    @default(0)
+  clicks     Int    @default(0)
+
+  @@unique([day, board])
+}
+
+// ── 购物（字段照 docs/26 第九节） ───────────────────────
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  phone        String   @unique
+  passwordHash String
+  /** 客服备注 */
+  remark       String   @default("")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @default(now()) @updatedAt
+
+  addresses Address[]
+  orders    Order[]
+  carts     Cart[]
+  sessions  ShopSession[]
+}
+
+model Address {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  phone     String
+  province  String
+  city      String
+  district  String
+  detail    String
+  postcode  String   @default("")
+  tag       String   @default("家")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model ProductSku {
+  id          String  @id @default(cuid())
+  itemId      String
+  variantName String
+  priceCents  Int
+  stock       Int     @default(0)
+  purchasable Boolean @default(true)
+  status      String  @default("on") // on | off
+  sort        Int     @default(0)
+
+  @@index([itemId])
+}
+
+model ShopSession {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  createdAt DateTime  @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Cart {
+  id        String   @id @default(cuid())
+  userId    String?
+  anonKey   String?  @unique
+  updatedAt DateTime @updatedAt
+
+  user  User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items CartItem[]
+
+  @@index([userId])
+}
+
+model CartItem {
+  id     String @id @default(cuid())
+  cartId String
+  skuId  String
+  qty    Int    @default(1)
+
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, skuId])
+}
+
+model Order {
+  id              String    @id @default(cuid())
+  orderNo         String    @unique
+  userId          String
+  status          String    @default("pending_payment")
+  subtotalCents   Int
+  shippingFeeCents Int      @default(0)
+  totalCents      Int
+  paymentMethod   String
+  addressJson     String
+  shippingJson    String
+  note            String    @default("")
+  /** 后台备注（客服填写） */
+  remark          String    @default("")
+  /** 发货信息：承运商、运单号、发货/完成时间 */
+  carrier         String?
+  trackingNo      String?
+  shippedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @default(now()) @updatedAt
+  paidAt          DateTime?
+  expiresAt       DateTime
+
+  user    User        @relation(fields: [userId], references: [id])
+  items   OrderItem[]
+  payment Payment?
+
+  @@index([userId, createdAt])
+  @@index([status])
+  @@map("shop_order")
+}
+
+model OrderItem {
+  id         String @id @default(cuid())
+  orderId    String
+  skuId      String
+  productId  String
+  title      String
+  variant    String
+  thumb      String
+  priceCents Int
+  qty        Int
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+}
+
+model Payment {
+  id          String    @id @default(cuid())
+  orderId     String    @unique
+  provider    String    @default("mock")
+  amountCents Int
+  status      String    @default("succeeded")
+  paidAt      DateTime  @default(now())
+  payloadJson String?
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}

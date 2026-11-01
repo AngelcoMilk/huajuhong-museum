@@ -1,0 +1,214 @@
+/* 纸上的公共件：印、线、题签、小字、绫边、朱线。全站只放纸上会出现的东西。
+   各页样式只管位置和尺寸，外观都在这里，两边不写同一个属性（路由样式的加载顺序不固定）。 */
+
+/* —— 朱印：40px 以下实心；48px 以上加 .zhu--lg（内线 + 做旧印面）。--seal 是印的边长，由各页定（这里不写默认值，路由样式的加载顺序不固定）。
+   印面是预渲染好的透明度图（不用实时 SVG 滤镜，Safari 不稳），朱色仍走令牌，字是真文字不做旧 —— */
+.zhu {
+  --seal-mask: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAQAAABIkb+zAAAAmklEQVR42u3SQQ0CQRBE0b+gAAsgAS3rBaXcZq7IWE5IIDDJqzZQr1Ml/5C90bHQ1dFor9qqGl0XfPvs9gEciy5nq9Pq6wcAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD4JmAu2X1Wnat6de+yXP1Hz+TneQOiGGHWaFDlCAAAAABJRU5ErkJggg==");
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: var(--seal, 30px);
+  height: var(--seal, 30px);
+  color: var(--seal-ink);
+  font-family: var(--font-kai);
+  font-size: calc(var(--seal, 30px) * 0.7);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+  -webkit-text-stroke: 0.022em currentColor;
+}
+.zhu--lg {
+  --seal-mask: url("data:image/png;base64,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");
+}
+.zhu::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--red);
+  -webkit-mask: var(--seal-mask) center / 100% 100% no-repeat;
+  mask: var(--seal-mask) center / 100% 100% no-repeat;
+}
+.zhu--lg::after {
+  content: '';
+  position: absolute;
+  inset: 7%;
+  z-index: -1;
+  border: 1px solid rgb(var(--seal-ink-rgb) / 0.55);
+}
+/* 两字印竖排，高不小于 48px */
+.zhu--two {
+  writing-mode: vertical-rl;
+  font-size: calc(var(--seal, 64px) * 0.36);
+  letter-spacing: 0.04em;
+}
+/* 空心朱文：订单状态章，颜色语义由各状态自己定 */
+.zhu-line {
+  flex: none;
+  display: grid;
+  place-items: center;
+  border: 2px solid currentColor;
+  font-family: var(--font-kai);
+  line-height: 1;
+  -webkit-text-stroke: 0.018em currentColor;
+}
+
+/* —— 子母线：页头下缘、页脚上缘。占位的 1px 边框留着，线本身不占位 —— */
+.shell-head::after,
+.shell-foot::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  height: 5px;
+  border-top: 2px solid var(--zimu-1);
+  border-bottom: 1px solid var(--zimu-2);
+  pointer-events: none;
+}
+.shell-head::after { bottom: -1px; }
+.shell-foot::before { top: -1px; }
+
+/* —— 题签式筛选：直角、细线框、楷体，选中朱底 —— */
+.shop-cats button,
+.vr__tabs button,
+.hs-tabs a,
+.chips button,
+.tag-picks button,
+.orders-tabs button,
+.ent-chip {
+  border: 1px solid rgb(var(--ink-rgb) / 0.24);
+  border-radius: 0;
+  background: rgb(var(--paper-hi-rgb) / 0.55);
+  color: var(--ink-2);
+  transition: background-color var(--t-1) var(--ease-out), color var(--t-1) var(--ease-out), border-color var(--t-1) var(--ease-out);
+}
+.shop-cats button:hover,
+.vr__tabs button:hover,
+.hs-tabs a:hover,
+.chips button:hover,
+.tag-picks button:hover,
+.orders-tabs button:hover,
+.ent-chip:hover {
+  border-color: var(--ink-2);
+  color: var(--ink);
+}
+.shop-cats button.is-on,
+.vr__tabs button.is-on,
+.hs-tabs a.is-on,
+.chips button.is-on,
+.tag-picks button.is-on,
+.orders-tabs button.is-on,
+.ent-chip[data-active='true'] {
+  border-color: var(--red);
+  background: var(--red);
+  color: var(--seal-ink);
+}
+.shop-cats button span,
+.vr__tabs button span,
+.hs-tabs a span,
+.orders-tabs button span,
+.ent-chip b {
+  color: var(--ink-3);
+}
+.shop-cats button.is-on span,
+.vr__tabs button.is-on span,
+.hs-tabs a.is-on span,
+.orders-tabs button.is-on span,
+.ent-chip[data-active='true'] b {
+  color: rgb(var(--seal-ink-rgb) / 0.82);
+}
+
+/* —— 小字：楷体，字号大一点，行高留在原来的位置 —— */
+.ex-stats__label,
+.ex-head__kicker,
+.pcard__cat,
+.feat__meta,
+.park-nav__label,
+.park-sec__kicker,
+.park-scenes__kicker,
+.park-advs__kicker,
+.park-group__count,
+.shop-feature__label {
+  font-family: var(--font-kai);
+  font-size: var(--fs-label);
+  line-height: var(--lh-micro);
+  letter-spacing: 0.08em;
+  color: var(--ex-ink-2, var(--ink-2));
+}
+.feat__meta { color: rgb(var(--on-dark-rgb) / 0.9); }
+
+/* —— 绫边：亮底页面的全景卡。边压在画面上，不占位；暗厅的卡片不加 —— */
+.hall-vr[data-tone='paper'] .hall-vr__frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 5px solid var(--ling);
+  outline: 1px solid rgb(var(--ink-rgb) / 0.28);
+  outline-offset: -6px;
+  pointer-events: none;
+}
+
+/* —— 按钮和输入框：只在展示区内。后台也有 .btn / .input，不能写到裸类名上 —— */
+.shell .btn,
+.shop--auth .btn { font-family: var(--font-kai); }
+.shell .input,
+.shell .select,
+.shop--auth .input,
+.shop-search input,
+.shop-sort select { border-radius: 0; }
+
+/* —— 朱线：取代文字箭头。hover 时从左到右画出，不引起位移 —— */
+.pcard__more,
+.mh-read,
+.ent-card__more,
+.feat__in em { position: relative; }
+.pcard__more::after,
+.mh-read::after,
+.ent-card__more::after,
+.feat__in em::after {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  bottom: -1px;
+  height: 1.5px;
+  background: var(--red);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform var(--t-2) var(--ease-out);
+}
+.feat__in em::after { top: -1px; bottom: auto; }
+.pcard:hover .pcard__more::after,
+.pcard:focus-visible .pcard__more::after,
+.mh-read:hover::after,
+.mh-read:focus-visible::after,
+.ent-card:hover .ent-card__more::after,
+.ent-card[data-hover='true'] .ent-card__more::after,
+.ent-card[data-selected='true'] .ent-card__more::after,
+.ent-card:has(.ent-card__hit:focus-visible) .ent-card__more::after,
+.feat:hover .feat__in em::after,
+.feat:focus-visible .feat__in em::after { transform: scaleX(1); }
+@media (prefers-reduced-motion: reduce) {
+  .pcard__more::after,
+  .mh-read::after,
+  .ent-card__more::after,
+  .feat__in em::after { transition: none; }
+}
+
+/* —— 白描：不压字，不接事件 —— */
+.line-art {
+  position: absolute;
+  z-index: 0;
+  display: block;
+  height: auto;
+  overflow: visible;
+  fill: none;
+  stroke: var(--ink);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.72;
+  pointer-events: none;
+}
+.line-art__soft { stroke: var(--ink-3); }
+.line-art__red { stroke: var(--red); }

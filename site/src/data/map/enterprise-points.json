@@ -1,0 +1,206 @@
+{
+  "QY-001": {
+    "lng": 110.634471,
+    "lat": 21.664117,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-003": {
+    "lng": 110.626664,
+    "lat": 21.667463,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-004": {
+    "lng": 110.617417,
+    "lat": 21.663483,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-013": {
+    "lng": 110.614792,
+    "lat": 21.654285,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-014": {
+    "lng": 110.621053,
+    "lat": 21.646638,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-022": {
+    "lng": 110.62964,
+    "lat": 21.648065,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-032": {
+    "lng": 110.634646,
+    "lat": 21.656091,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-002": {
+    "lng": 110.400612,
+    "lat": 22.032909,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-010": {
+    "lng": 110.398675,
+    "lat": 22.023558,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-012": {
+    "lng": 110.405452,
+    "lat": 22.016327,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-017": {
+    "lng": 110.415802,
+    "lat": 22.016726,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-018": {
+    "lng": 110.421691,
+    "lat": 22.024562,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-029": {
+    "lng": 110.417411,
+    "lat": 22.032421,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-030": {
+    "lng": 110.409686,
+    "lat": 22.035437,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-005": {
+    "lng": 110.643505,
+    "lat": 21.67124,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-019": {
+    "lng": 110.645087,
+    "lat": 21.662975,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-021": {
+    "lng": 110.650381,
+    "lat": 21.65777,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-026": {
+    "lng": 110.657114,
+    "lat": 21.663227,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-027": {
+    "lng": 110.653549,
+    "lat": 21.670881,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-006": {
+    "lng": 110.635851,
+    "lat": 21.636494,
+    "coordSource": "镇街中心近似",
+    "verified": false
+  },
+  "QY-007": {
+    "lng": 110.646289,
+    "lat": 21.652652,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-028": {
+    "lng": 110.639361,
+    "lat": 21.660194,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-034": {
+    "lng": 110.635692,
+    "lat": 21.65017,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-008": {
+    "lng": 110.586067,
+    "lat": 22.009066,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-025": {
+    "lng": 110.588481,
+    "lat": 21.999712,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-009": {
+    "lng": 110.497491,
+    "lat": 21.730714,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-023": {
+    "lng": 110.501196,
+    "lat": 21.739688,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-011": {
+    "lng": 110.595606,
+    "lat": 21.873205,
+    "coordSource": "镇街中心近似",
+    "verified": false
+  },
+  "QY-015": {
+    "lng": 110.427367,
+    "lat": 21.651691,
+    "coordSource": "镇街中心近似",
+    "verified": false
+  },
+  "QY-016": {
+    "lng": 110.54542,
+    "lat": 21.661277,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-024": {
+    "lng": 110.535547,
+    "lat": 21.665679,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-031": {
+    "lng": 110.535663,
+    "lat": 21.656641,
+    "coordSource": "镇街中心 + 偏移",
+    "verified": false
+  },
+  "QY-020": {
+    "lng": 110.474174,
+    "lat": 21.842391,
+    "coordSource": "镇街中心近似",
+    "verified": false
+  },
+  "QY-035": {
+    "lng": 110.691296,
+    "lat": 21.598521,
+    "coordSource": "镇街中心近似",
+    "verified": false
+  }
+}
