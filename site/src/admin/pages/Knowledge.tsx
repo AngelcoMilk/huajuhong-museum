@@ -1,5 +1,5 @@
 // 知识库：切片 / 检索测试 / 知识缺口 / Wiki 四个 Tab，当前 Tab 写进 URL。
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { BookOpen, CircleHelp, Copy, Layers, Pencil, Plus, Search, Trash2 } from "lucide-react";
@@ -302,11 +302,84 @@ function SliceEditor({
   );
 }
 
+type SearchHit = Awaited<ReturnType<typeof api.kbSearch>>["hits"][number];
+
+/**
+ * 命中词的字符区间：同一段文本里每个词的所有出现位置，重叠或相邻的合并成一段。
+ * 只用 indexOf 找，不拼正则——检索词里有 ( [ * \\` 也不会出错。
+ */
+function hitRanges(text: string, terms: string[]): Array<[number, number]> {
+  const lower = text.toLowerCase();
+  const found: Array<[number, number]> = [];
+  for (const term of terms) {
+    const needle = term.toLowerCase();
+    if (!needle) continue;
+    let from = 0;
+    for (;;) {
+      const at = lower.indexOf(needle, from);
+      if (at < 0) break;
+      found.push([at, at + needle.length]);
+      from = at + 1;
+    }
+  }
+  if (found.length === 0) return [];
+  found.sort((a, b) => a[0] - b[0] || b[1] - a[1]);
+  const merged: Array<[number, number]> = [];
+  for (const range of found) {
+    const last = merged[merged.length - 1];
+    if (last && range[0] <= last[1]) last[1] = Math.max(last[1], range[1]);
+    else merged.push([range[0], range[1]]);
+  }
+  return merged;
+}
+
+/** 纯文本 + 文本节点渲染：内容里的 <script> 只是字；不用 dangerouslySetInnerHTML */
+function Marked({ text, ranges }: { text: string; ranges: Array<[number, number]> }) {
+  if (ranges.length === 0) return <>{text}</>;
+  const parts: ReactNode[] = [];
+  let at = 0;
+  ranges.forEach(([start, end], index) => {
+    if (start > at) parts.push(text.slice(at, start));
+    parts.push(<mark key={index}>{text.slice(start, end)}</mark>);
+    at = end;
+  });
+  if (at < text.length) parts.push(text.slice(at));
+  return <>{parts}</>;
+}
+
+/** 列表摘要：取第一个命中处前后各 30 字；没有命中就从开头截一段 */
+function excerptOf(text: string, terms: string[], pad = 30) {
+  const ranges = hitRanges(text, terms);
+  if (ranges.length === 0) {
+    const slice = text.slice(0, pad * 3);
+    return { slice, ranges: [] as Array<[number, number]>, lead: false, trail: text.length > slice.length };
+  }
+  const [start, end] = ranges[0];
+  const from = Math.max(0, start - pad);
+  // 右边界正好落在某个命中词中间时往后让到词尾，别在摘要末尾标出半个词
+  let to = Math.min(text.length, end + pad);
+  for (const [a, b] of ranges) if (a < to && b > to) to = Math.min(text.length, b);
+  return {
+    slice: text.slice(from, to),
+    // 骑在摘要边界上的命中词也要标出露出来的那一截，别整段丢掉
+    ranges: ranges
+      .map(([a, b]) => [Math.max(a, from), Math.min(b, to)] as [number, number])
+      .filter(([a, b]) => b > a)
+      .map(([a, b]) => [a - from, b - from] as [number, number]),
+    lead: from > 0,
+    trail: to < text.length,
+  };
+}
+
 function SearchTest() {
   const query = useListQuery([]);
   const applied = query.q;
   const [draft, setDraft] = useState(applied);
+  // 打开的是哪一条：结果留在原处，关掉就回到列表，检索词和结果都不动
+  const [openId, setOpenId] = useState<string | null>(null);
   const result = useAsync(() => (applied ? api.kbSearch(applied) : Promise.resolve(null)), [applied]);
+  const hits = result.data?.hits ?? [];
+  const open: SearchHit | null = openId ? (hits.find((hit) => hit.id === openId) ?? null) : null;
 
   function run(event: React.FormEvent) {
     event.preventDefault();
@@ -326,20 +399,51 @@ function SearchTest() {
       {result.error && <ErrorBar message={result.error} onRetry={result.reload} />}
       {result.loading && !result.data && applied && <Skeleton rows={4} />}
       {!applied && <Empty compact>输入一句话，看讲解员能检索到哪些切片。</Empty>}
-      {result.data && result.data.hits.length === 0 && <Empty compact>没有命中任何切片，这正是「知识缺口」该记下来的情形。</Empty>}
-      {result.data && result.data.hits.length > 0 && (
+      {result.data && hits.length === 0 && <Empty compact>没有命中任何切片，这正是「知识缺口」该记下来的情形。</Empty>}
+      {hits.length > 0 && (
         <div className="mini-list">
-          {result.data.hits.map((hit, index) => (
-            <div className="kv" key={hit.id}>
-              <span className="muted mono kv__rank">{index + 1}</span>
-              <span className="kv__main">
-                <span className="dl-ellipsis">{hit.title}</span>
-                <span className="muted dl-ellipsis">{hit.origin ?? "馆内整理资料"}</span>
-              </span>
-              <span className="muted mono">{hit.score.toFixed(1)}</span>
-            </div>
-          ))}
+          {hits.map((hit, index) => {
+            const excerpt = excerptOf(hit.content, hit.terms);
+            return (
+              <button
+                key={hit.id}
+                type="button"
+                className="kv kv--link"
+                aria-current={openId === hit.id ? "true" : undefined}
+                onClick={() => setOpenId(hit.id)}
+              >
+                <span className="muted mono kv__rank">{index + 1}</span>
+                <span className="kv__main">
+                  <span className="dl-ellipsis">
+                    <Marked text={hit.title} ranges={hitRanges(hit.title, hit.terms)} />
+                  </span>
+                  <span className="muted kb-hit__excerpt">
+                    {excerpt.lead ? "…" : ""}
+                    <Marked text={excerpt.slice} ranges={excerpt.ranges} />
+                    {excerpt.trail ? "…" : ""}
+                  </span>
+                  <span className="muted dl-ellipsis">{hit.origin ?? "馆内整理资料"}</span>
+                </span>
+                <span className="muted mono">{hit.score.toFixed(1)}</span>
+              </button>
+            );
+          })}
         </div>
+      )}
+      {open && (
+        <Drawer
+          title={open.title}
+          onClose={() => setOpenId(null)}
+          status={<span className="pill">{open.source || "未标来源"}</span>}
+        >
+          <p className="meta-row muted">
+            <span>{open.origin ?? "馆内整理资料"}</span>
+            {open.url && <span className="mono kb-meta__url">{open.url}</span>}
+          </p>
+          <div className="kb-reader">
+            <Marked text={open.content} ranges={hitRanges(open.content, open.terms)} />
+          </div>
+        </Drawer>
       )}
     </Card>
   );

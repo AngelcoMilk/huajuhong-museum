@@ -1,10 +1,11 @@
-// 初始化数据：把 prisma/seed-data/*.json 写入空库，再建管理员。
+// 初始化数据：把 prisma/seed-data/*.json 写入空库，再建管理员与讲解员的默认配置。
 // 可重复执行：已经存在的行一个字段都不动（后台改过的内容、现用口令都不受影响）。
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { PrismaClient } from "@prisma/client";
 import { randomBytes } from "node:crypto";
 import { hashPassword } from "../src/lib/password.ts";
+import { GUIDE_SYSTEM_PROMPT } from "../src/agent/prompts.ts";
 
 const prisma = new PrismaClient();
 const DATA_DIR = join(import.meta.dirname, "seed-data");
@@ -22,7 +23,6 @@ const TABLES = [
   "VrGroup",
   "VrScene",
   "Setting",
-  "ConfigVersion",
 ] as const;
 
 const quote = (name: string) => '"' + name.replace(/"/g, '""') + '"';
@@ -51,6 +51,26 @@ async function seedTable(table: string): Promise<number> {
   return rows.length;
 }
 
+/**
+ * 讲解员默认配置：全新库里只放一版「未发布」的 v1 ——
+ * 系统提示词是代码里的 GUIDE_SYSTEM_PROMPT 全文，供应商/模型一律留空（后台显示待配置）。
+ * 表里已经有任何版本就一个都不动：重复 seed 不新增、不覆盖 v1 上的修改与发布状态，
+ * 老库里遗留的 v2 之类也照原样留着。
+ */
+async function seedConfigVersion(): Promise<string> {
+  const existing = await prisma.configVersion.count();
+  if (existing > 0) return `ConfigVersion=skipped(${existing})`;
+  await prisma.configVersion.create({
+    data: {
+      versionNo: 1,
+      status: "draft",
+      promptJson: JSON.stringify({ system: GUIDE_SYSTEM_PROMPT }),
+      modelJson: "{}",
+    },
+  });
+  return "ConfigVersion=v1(draft)";
+}
+
 async function seedAdmin() {
   const username = process.env.ADMIN_USERNAME ?? "admin";
   // 不写死默认口令：ADMIN_PASSWORD 没设就随机生成，只在这里打印一次。
@@ -77,6 +97,7 @@ async function main() {
     counts.push(`${table}=${n}`);
   }
   await seedAdmin();
+  counts.push(await seedConfigVersion());
   console.log(`[seed] ${counts.join(" ")}`);
 }
 

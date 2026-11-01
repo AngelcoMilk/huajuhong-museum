@@ -150,11 +150,7 @@ export default function Guide() {
           <span className="guide-bar__item">
             <span className="muted">线上</span>
             <b className="mono">{published?.versionNo ? `v${published.versionNo}` : "—"}</b>
-            {published?.model && (
-              <span className="muted mono dl-ellipsis">
-                {published.model.provider}/{published.model.model}
-              </span>
-            )}
+            {published?.model && <span className="muted mono dl-ellipsis">{modelLabel(published.model)}</span>}
           </span>
           <span className={dirty ? "pill pill--bad" : hasPendingDraft ? "pill pill--warn" : "pill"}>{dirty ? "有未保存的改动" : hasPendingDraft ? `草稿 v${current.data?.draft?.versionNo} 未发布` : "没有草稿"}</span>
         </div>
@@ -219,7 +215,9 @@ export default function Guide() {
         <GuideChat
           form={{ system: form.system, provider: form.provider, model: form.model }}
           formProblem={formProblem}
-          liveLabel={live ? `${live.provider}/${live.model}` : undefined}
+          liveLabel={
+            !live ? undefined : live.published ? `${live.provider}/${live.model}` : "待配置"
+          }
         />
       </div>
 
@@ -247,6 +245,13 @@ function isSelectable(options: ModelOptions | null, provider: string, model: str
   return Boolean(row?.enabled && row.models.some((one) => one.id === model));
 }
 
+/** 版本上的模型：还没选供应商/模型（默认的 v1 就是这种）显示「待配置」，不打印 undefined/undefined */
+function modelLabel(model: ConfigVersion["model"] | undefined): string {
+  const provider = model?.provider?.trim();
+  const id = model?.model?.trim();
+  return provider && id ? `${provider}/${id}` : "待配置";
+}
+
 function ModelPicker({
   options,
   provider,
@@ -262,7 +267,9 @@ function ModelPicker({
 }) {
   const { current } = options;
   const enabled = options.providers.filter((one) => one.enabled);
-  const keepingCurrent = !current.inList && provider === current.provider && model === current.model;
+  // 还没有发布过版本时线上用的是环境变量里的内置模型名，那不是「线上配置」，
+  // 不能拿来当预填值或「保持线上的」选项——供应商与模型都显示成待配置。
+  const keepingCurrent = current.published && !current.inList && provider === current.provider && model === current.model;
   const row = enabled.find((one) => one.name === provider);
   // 草稿里的供应商不在可选列表（已停用、已删除）：下拉框回到未选，由下面的错误提示换一个
   const providerValue = keepingCurrent ? KEEP_CURRENT : (row?.name ?? "");
@@ -278,7 +285,16 @@ function ModelPicker({
 
   return (
     <div className="stack">
-      {!current.inList && (
+      {!current.published && (
+        <div className="banner">
+          <span>
+            {provider && model
+              ? "还没有发布过版本：点「发布」后前台讲解员才会启用。"
+              : "供应商与模型待配置：选好后保存并发布，前台讲解员才会启用。"}
+          </span>
+        </div>
+      )}
+      {current.published && !current.inList && (
         <div className="guide-current">
           <span className="muted">线上正在用</span>
           <b className="mono">
@@ -302,7 +318,7 @@ function ModelPicker({
         <div className="form-grid">
           <Field label="供应商" hint={enabled.some((one) => !one.ready) ? "灰色的还没配好 Key，到模型供应商页补上后才能选" : undefined}>
             <select className="select" value={providerValue} onChange={(e) => pickProvider(e.target.value)}>
-              {!current.inList && <option value={KEEP_CURRENT}>保持线上的 {current.provider}</option>}
+              {current.published && !current.inList && <option value={KEEP_CURRENT}>保持线上的 {current.provider}</option>}
               {providerValue === "" && <option value="">请选择</option>}
               {enabled.map((one) => (
                 <option key={one.name} value={one.name} disabled={!one.ready}>
@@ -605,7 +621,7 @@ function HistoryDrawer({
   const columns: Column<ConfigVersion>[] = [
     { key: "no", label: "版本", width: "56px", render: (row) => <span className="dl-title mono">v{row.versionNo}</span> },
     { key: "status", label: "状态", width: "72px", render: (row) => <VersionStatus status={row.status} /> },
-    { key: "model", label: "模型", width: "minmax(0, 1fr)", mobile: "grow", render: (row) => <span className="muted mono dl-ellipsis">{row.model ? `${row.model.provider}/${row.model.model}` : "—"}</span> },
+    { key: "model", label: "模型", width: "minmax(0, 1fr)", mobile: "grow", render: (row) => <span className="muted mono dl-ellipsis">{modelLabel(row.model)}</span> },
     { key: "time", label: "时间", width: "112px", mobile: "hide", render: (row) => <span className="dl-time">{dateTime(row.publishedAt ?? row.createdAt)}</span> },
   ];
 

@@ -19,6 +19,8 @@ export interface ActiveConfig {
   model: string;
   providerConfig: ProviderConfig | null;
   versionNo: number | null;
+  /** 库里有没有已发布的配置版本；没有时前台讲解员一律提示暂不可用（后台试聊走 override，不受影响） */
+  published: boolean;
 }
 
 const CACHE_MS = 10_000;
@@ -34,6 +36,7 @@ const ENV_DEFAULT: ActiveConfig = {
   model: process.env.GUIDE_MODEL ?? "deepseek-v4-flash",
   providerConfig: null,
   versionNo: null,
+  published: false,
 };
 
 async function resolveProvider(name: string): Promise<ProviderConfig | null> {
@@ -80,6 +83,7 @@ export async function loadActiveConfig(): Promise<ActiveConfig> {
         model: modelId,
         providerConfig: await resolveProvider(provider),
         versionNo: published.versionNo,
+        published: true,
       };
     }
   } catch (error) {
@@ -105,6 +109,7 @@ export async function withOverride(override?: {
     model: override.model || base.model,
     providerConfig: provider === base.provider ? base.providerConfig : await resolveProvider(provider),
     versionNo: base.versionNo,
+    published: base.published,
   };
 }
 

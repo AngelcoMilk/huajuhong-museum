@@ -128,6 +128,12 @@ export class PiRunner implements Runner {
 
       this.active = await withOverride(this.opts.override);
       const active = this.active;
+      // 库里没有已发布配置时，后台的供应商/模型都还是「待配置」：前台既不给访客裸报错，
+      // 也不拿环境变量里的默认模型顶上（那会绕过「发布」这一步）。
+      // app.ts 接住这个错误后对访客只发一句「讲解服务暂时不可用，请稍后再试」。
+      if (!active.published && !this.opts.override) {
+        throw new Error("GUIDE_NOT_CONFIGURED：后台还没有发布讲解员配置");
+      }
 
       const loader = new DefaultResourceLoader({
         cwd: SERVER_ROOT,

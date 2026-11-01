@@ -265,6 +265,35 @@ function scoreSlice(query: string, slice: { title: string; content: string }): n
   return score;
 }
 
+/**
+ * 这一片里真正命中的词：与 scoreSlice 同一套二字词元（分词结果），只取真的出现在标题或正文里的那些。
+ * 只用于把命中处标出来——分数、排序、条数一律不受影响；整句检索词不当字面串用。
+ * 单字查询没有二字词元，它本身就是那个词元。
+ */
+function matchedTerms(query: string, slice: { title: string; content: string }): string[] {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const title = slice.title.toLowerCase();
+  const content = slice.content.toLowerCase();
+  // 检索词里带空格、括号、星号时，二字词元可能是「 化」「* 」这种；命中的是里面的字，
+  // 标出来的也只要那个字——去掉两头的空白与标点，纯符号的词元整个丢掉。
+  const trim = (term: string) => term.replace(/^[^\p{L}\p{N}]+|[^\p{L}\p{N}]+$/gu, "");
+  const hits = new Set<string>();
+  const grams = new Set<string>();
+  for (let i = 0; i < q.length - 1; i += 1) grams.add(q.slice(i, i + 2));
+  for (const gram of grams) {
+    if (!title.includes(gram) && !content.includes(gram)) continue;
+    const term = trim(gram);
+    if (term) hits.add(term);
+  }
+  // 单字查询没有二字词元，它自己就是那个词元
+  if (q.length === 1 && (title.includes(q) || content.includes(q))) {
+    const term = trim(q);
+    if (term) hits.add(term);
+  }
+  return [...hits];
+}
+
 /** G2（登录部分）：登录请求体上限 8KB */
 const LOGIN_BODY_LIMIT = 8 * 1024;
 
@@ -1124,7 +1153,17 @@ export function makeAdminApp() {
     if (!query) return fail(c, 400, "BAD_REQUEST", "请输入要检索的问题。");
     const slices = await prisma.kbSlice.findMany();
     const hits = slices
-      .map((s) => ({ id: s.id, title: s.title, origin: s.origin, url: s.url, source: s.source, score: scoreSlice(query, s) }))
+      .map((s) => ({
+        id: s.id,
+        title: s.title,
+        origin: s.origin,
+        url: s.url,
+        source: s.source,
+        score: scoreSlice(query, s),
+        // 下面两项只给「点开看内容」用，不影响分数与排序
+        content: s.content,
+        terms: matchedTerms(query, s),
+      }))
       .filter((h) => h.score > 0)
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
@@ -1898,7 +1937,9 @@ export function makeAdminApp() {
     );
     return c.json({
       providers,
-      current: { provider: active.provider, model: active.model, inList },
+      // published=false 表示库里还没有发布版本，供应商/模型都还是待配置：
+      // 前端据此显示「待配置」，而不是把环境变量里的默认模型当成线上配置摆出来。
+      current: { provider: active.provider, model: active.model, inList, published: active.published },
     });
   });
 

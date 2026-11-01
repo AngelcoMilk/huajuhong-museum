@@ -50,7 +50,16 @@ export function registerConfigVersions(app: any) {
       : await prisma.configVersion.findFirst({ where: { status: "draft" }, orderBy: { createdAt: "desc" } });
     if (!target) return fail(c, 404, "VERSION_NOT_FOUND", "没有可发布的版本。");
 
-    const model = JSON.parse(target.modelJson) as { provider?: string; model?: string };
+    let model: { provider?: string; model?: string } = {};
+    try {
+      model = JSON.parse(target.modelJson) as { provider?: string; model?: string };
+    } catch {
+      model = {};
+    }
+    // 还没配模型（全新库默认的 v1 就是这样）：说清楚缺什么，不要让「不可选」把人带偏
+    if (!model?.provider || !model?.model) {
+      return fail(c, 400, "MODEL_REQUIRED", "这一版还没选供应商和模型，先在「讲解员」里选好再发布。", "model");
+    }
     // 发布草稿时模型必须是可选的（库内已启用供应商 + 它的模型，或线上原值）；
     // 回滚历史版本不受此限制，但仍走下面的发布前检查。
     if (target.status === "draft" && !(await modelSelectable(model))) {

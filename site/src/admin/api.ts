@@ -398,7 +398,8 @@ export interface PiProvider {
 
 export interface ModelOptions {
   providers: Array<{ name: string; displayName: string | null; enabled: boolean; ready: boolean; models: Array<{ id: string; name: string }> }>;
-  current: { provider: string; model: string; inList: boolean };
+  /** published=false：库里还没有发布版本，供应商/模型都还是待配置 */
+  current: { provider: string; model: string; inList: boolean; published: boolean };
 }
 
 export interface TryResult {
@@ -496,7 +497,11 @@ export const api = {
   publishItem: (id: string, published: boolean) => send<{ id: string; status: string }>(`/items/${encodeURIComponent(id)}/publish`, "POST", { published }),
   kbSlices: (params: Record<string, string | number | undefined>) => get<Page<{ id: string; title: string; origin: string | null; url: string | null; source: string; updatedAt: number }>>(`/kb/slices${qs(params)}`),
   kbSlice: (id: string) => get<{ id: string; title: string; origin: string | null; content: string; url: string | null; source: string }>(`/kb/slices/${encodeURIComponent(id)}`),
-  kbSearch: (query: string) => send<{ query: string; hits: Array<{ id: string; title: string; origin: string | null; score: number; source: string }> }>("/kb/search-test", "POST", { query }),
+  kbSearch: (query: string) =>
+    send<{
+      query: string;
+      hits: Array<{ id: string; title: string; origin: string | null; url: string | null; score: number; source: string; content: string; terms: string[] }>;
+    }>("/kb/search-test", "POST", { query }),
   kbWiki: () => get<Array<{ slug: string; title: string; source: string | null; updated: string | null; chars: number }>>("/kb/wiki"),
   kbWikiPage: (slug: string) => get<{ slug: string; markdown: string }>(`/kb/wiki/${encodeURIComponent(slug)}`),
   aggregate: (days = 7) => send<{ days: number; events: number; buckets: number }>(`/analytics/aggregate?days=${days}`, "POST", {}),

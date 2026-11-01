@@ -21,7 +21,7 @@ npm run dev               # http://127.0.0.1:3000
 | `npm start` | 生产启动（先 `NODE_ENV=production`） |
 | `npm run db:deploy` | 应用迁移，建库 |
 | `npm run db:migrate` | 开发期新建迁移 |
-| `npm run db:seed` | 写入 `prisma/seed-data/*.json`，创建管理员；可重复执行 |
+| `npm run db:seed` | 写入 `prisma/seed-data/*.json`，创建管理员与讲解员默认配置；可重复执行 |
 | `npm run db:studio` | 打开 Prisma Studio 看库 |
 | `npm test` | 接口测试（不发网络请求，不碰真实库） |
 | `npm run test:live` | 真实模型联调，需要 Key，会消耗 token |
@@ -65,7 +65,11 @@ test/           接口测试
 
 `db:seed` 创建管理员：用户名默认 `admin`，口令取 `ADMIN_PASSWORD`；没设则随机生成并只打印一次。首次登录必须改密。
 
-讲解员的模型来自管理后台「模型供应商」：填 OpenAI 兼容接口的 `baseUrl`、模型名与 Key（Key 加密存在库里，接口不回显）。没有配置供应商时，讲解员提示暂不可用。
+讲解员的模型来自管理后台「模型供应商」：填 OpenAI 兼容接口的 `baseUrl`、模型名与 Key（Key 加密存在库里，接口不回显）。
+
+`db:seed` 只建一版**未发布**的 v1：系统提示词是代码里的 `GUIDE_SYSTEM_PROMPT` 全文，供应商与模型留空（后台显示待配置）。
+在后台「讲解员」里选好供应商和模型再发布，前台才会启用；没有已发布版本时前台统一提示「讲解服务暂时不可用，请稍后再试」。
+重复执行 `db:seed` 不会新增版本、也不会覆盖 v1 上的修改和发布状态；库里已有的其他版本（比如老部署留下的 v2）照原样保留。
 
 ## 测试
 

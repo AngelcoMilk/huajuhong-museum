@@ -1269,6 +1269,11 @@
 .kv--link { cursor: pointer; transition: background var(--dur-glass) var(--ease-glass); }
 .kv--link:hover, .kv--link[aria-current="true"] { background: var(--hover-tint); }
 .kv--link[aria-current="true"] { box-shadow: inset 2px 0 0 var(--primary); }
+/* 检索测试：摘要两行内换行、全文在弹层里按纯文本换行显示，长串不撑破页面 */
+.kb-hit__excerpt { white-space: normal; overflow-wrap: anywhere; line-height: 1.55; }
+.kb-meta__url { overflow-wrap: anywhere; }
+.kb-reader { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.75; color: var(--text); }
+.kb-reader mark, .kb-hit__excerpt mark, .kv--link .dl-ellipsis mark { padding: 0 2px; border-radius: 2px; background: linear-gradient(180deg, transparent 52%, var(--warning-tint) 52%); color: inherit; font-weight: 600; }
 .totals { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; padding-top: 8px; font-size: 13px; }
 .totals strong { font-size: 14px; font-weight: 600; }
 

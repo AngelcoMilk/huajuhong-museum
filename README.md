@@ -54,6 +54,9 @@ npm --prefix server run db:seed     # 写入内容，并创建管理员
 
 `db:seed` 会打印管理员用户名与初始口令。设了 `ADMIN_PASSWORD` 就用你设的值；没设则随机生成，只打印这一次，请立刻保存。
 
+建库后的讲解员只有一版**未发布**的 v1：系统提示词就是代码里的 `GUIDE_SYSTEM_PROMPT`，供应商与模型都是待配置。
+在后台「讲解员」里选好供应商和模型再发布，前台讲解员才会启用；在此之前它会提示「讲解服务暂时不可用，请稍后再试」。
+
 起服务：
 
 ```sh
@@ -76,7 +79,7 @@ npm --prefix site run dev           # 站点 http://localhost:5173
 | `ADMIN_USERNAME` / `ADMIN_PASSWORD` | 否 | 仅 `db:seed` 使用 |
 | `PORT` / `HOST` | 否 | 监听端口与地址，默认 `3000` / `127.0.0.1` |
 | `SERVE_SITE` | 否 | 设 `1` 时由后端单端口托管 `site/dist` |
-| `GUIDE_PROVIDER` / `GUIDE_MODEL` | 否 | 没有已发布讲解员配置时的默认模型 |
+| `GUIDE_PROVIDER` / `GUIDE_MODEL` | 否 | 内置模型名。后台试聊与会话分析取不到库里的配置时用它兜底；前台讲解员必须先发布一版配置才可用 |
 | `PI_MODELS_PATH` | 否 | 自定义模型表位置，默认用 pi 自己的 `~/.pi/agent/models.json` |
 
 其余限流、并发、Cookie 相关的可选变量都写在 `server/.env.example` 的注释里。
